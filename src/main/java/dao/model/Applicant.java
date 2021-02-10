@@ -1,15 +1,28 @@
 package dao.model;
 
-import java.util.Objects;
+import java.util.Random;
 
-public class Student {
+public class Applicant {
     private int id;
     private String firstName;
     private String lastName;
-    private int schoolGrade;
+    private int schoolAverage;
     private int facultyId;
-    private String email;
     private String password;
+    private String enrolled;
+
+    public Applicant () {
+    }
+
+
+    public static String generatePin() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+            sb.append(random.nextInt(10));
+        }
+        return sb.toString();
+    }
 
     public int getId() {
         return id;
@@ -35,12 +48,12 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public int getSchoolGrade() {
-        return schoolGrade;
+    public int getSchoolAverage() {
+        return schoolAverage;
     }
 
-    public void setSchoolGrade(int schoolGrade) {
-        this.schoolGrade = schoolGrade;
+    public void setSchoolAverage(int schoolAverage) {
+        this.schoolAverage = schoolAverage;
     }
 
     public int getFacultyId() {
@@ -59,15 +72,22 @@ public class Student {
         this.password = password;
     }
 
+    public String getEnrolled() {
+        return enrolled;
+    }
+
+    public void setEnrolled(String enrolled) {
+        this.enrolled = enrolled;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", schoolGrade=" + schoolGrade +
+                ", schoolGrade=" + schoolAverage +
                 ", facultyId=" + facultyId +
-                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
