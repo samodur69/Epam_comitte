@@ -1,8 +1,8 @@
-package daoimpl;
+package dao.daoimpl;
 
 import dao.ExamDao;
 import data.DBConnection;
-import model.Exam;
+import dao.model.Exam;
 
 import java.sql.*;
 import java.util.List;
@@ -12,41 +12,50 @@ public class ExamImpl implements ExamDao {
     @Override
     public List getAll() {
         String sql = "select * from exams_list";
+        Connection con = null;
+        Statement st = null;
+        ResultSet rs = null;
         try {
-            Connection con = DBConnection.getConnection();
-            Statement ps = con.createStatement();
-            ResultSet rs = ps.executeQuery("select * from exams_list");
+            con = DBConnection.getConnection();
+            st = con.createStatement();
+            rs = st.executeQuery("SELECT * FROM EXAMS_LIST");
             while (rs.next()) {
                 int id;
                 String name;
                 id = rs.getInt(1);
                 name = rs.getString(2);
-                System.out.println(id + "name: " + name);
+                System.out.println("id: " + id + " - name: " + name);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-
+            DBConnection.close(con);
         }
         return null;
     }
 
-    public Exam getById(int id) throws SQLException {
+    public Exam getById(int id) {
         Exam exam = null;
         Connection con = null;
-        String sql = "select * from exams_list where id = ?";
+        PreparedStatement ps = null;
+        String sql = "SELECT * FROM EXAMS_LIST WHERE EXAM_ID = ?";
         try {
             con = DBConnection.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            exam.setExamId(rs.getInt("exam_id"));
-            exam.setExamName(rs.getString("exam_name"));
-            System.out.println(exam.getExamId() + "     " + exam.getExamName());
+            while (rs.next()) {
+                System.out.println(rs.getInt(1));
+                System.out.println(rs.getString(2));
+
+//                exam.setExamId(rs.getInt("EXAM_ID"));
+//                exam.setExamName(rs.getString("EXAM_NAME"));
+//                System.out.println(exam.getExamId() + "     " + exam.getExamName());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            DBConnection.close(con);
+            DBConnection.close(ps, con);
         }
         return exam;
     }

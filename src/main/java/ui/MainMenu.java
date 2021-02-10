@@ -1,6 +1,6 @@
 package ui;
 
-import daoimpl.ExamImpl;
+import dao.daoimpl.ExamImpl;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -18,10 +18,11 @@ public class MainMenu {
                     System.out.println("login stud");
                     break;
                 case 3:
+                    System.out.println("test-area");
                     ExamImpl ex = new ExamImpl();
                     System.out.println(ex.getAll());
                     System.out.println(ex.getById(10));
-                    System.out.println("system menu");
+
                     break;
                 default:
                     System.out.println("Wrong choice");

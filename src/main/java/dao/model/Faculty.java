@@ -1,4 +1,4 @@
-package model;
+package dao.model;
 
 public class Faculty {
     private int facultyId;
