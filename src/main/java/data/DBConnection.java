@@ -1,5 +1,8 @@
 package data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,10 +10,10 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private final String DB_URL="jdbc:oracle:thin:@firsttestbase_medium?TNS_ADMIN=/Users/apple/_Projects/Epam_comitte/Wallet_FirstTestBase";
+    private final String DB_URL="jdbc:oracle:thin:@firsttestbase_medium?TNS_ADMIN=/Users/apple/_Projects/Epam_comitte/src/main/resources/Wallet_FirstTestBase";
     private final String DB_USER = "ADMIN";
     private final String DB_PASSWORD = "Loveloveyou87";
-
+    private static final Logger logger = LoggerFactory.getLogger(DBConnection.class);
     private static DBConnection instance;
 
     private DBConnection() {
@@ -30,7 +33,7 @@ public class DBConnection {
         try {
             return DriverManager.getConnection(instance.DB_URL, instance.DB_USER, instance.DB_PASSWORD);
         } catch (SQLException e) {
-            System.out.println("Troubles with return connection");
+            logger.info("Troubles with return connection");
             e.printStackTrace();
             return null;
         }

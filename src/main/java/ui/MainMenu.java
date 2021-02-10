@@ -1,6 +1,6 @@
 package ui;
 
-import dao.daoimpl.ExamImpl;
+import dao.implementations.ExamImpl;
 import java.util.Scanner;
 
 public class MainMenu {
