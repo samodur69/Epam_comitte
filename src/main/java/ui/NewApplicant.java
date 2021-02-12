@@ -5,9 +5,7 @@ import dao.implementations.FacultyImpl;
 import dao.model.Applicant;
 import dao.model.Faculty;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class NewApplicant {
     public static void start() {
@@ -15,7 +13,7 @@ public class NewApplicant {
         Applicant applicant= new Applicant();
         ApplicantImpl applicantDb = new ApplicantImpl();
         FacultyImpl fac = new FacultyImpl();
-        List<Faculty> fac_list = new ArrayList<>();
+        List<Faculty> fac_list;
 
         applicant.setEnrolled("N"); // posle podscheta - change to Y
         System.out.println("Welcome to our university!\n" +
@@ -37,12 +35,20 @@ public class NewApplicant {
         System.out.println("Let`s choice faculty (type Faculty ID):");
         fac_list = fac.getAll();
         // Create HashMap
+        Map<Integer, String> course_map = new LinkedHashMap<>();
         for (Faculty faculty: fac_list) {
-            System.out.println(faculty.idAndName());
+            course_map.put(faculty.getFacultyId(), faculty.getFacultyName());
+            System.out.println(faculty.getFacultyId() + " - " + faculty.getFacultyName());
         }
-        int choice = scan.nextInt();
-//        while (!fac_list.contains(choice)
+        int choice;
+        while (true) {
+            choice = scan.nextInt();
+            if (course_map.containsKey(choice)) {
+                applicant.setFacultyId(choice);
+                break;
+            }
+            System.out.println("Please try again");
+        }
         applicantDb.create(applicant);
-        System.out.println("next step");
     }
 }
