@@ -10,8 +10,17 @@ public class Applicant {
     private int facultyId;
     private String password;
     private String enrolled;
+    private String email;
 
     public Applicant () {
+    }
+
+    public Applicant (String firstName, String lastName, int schoolAverage, int facultyId) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.schoolAverage = schoolAverage;
+        this.facultyId = facultyId;
+        this.password = generatePin();
     }
 
 
@@ -80,15 +89,25 @@ public class Applicant {
         this.enrolled = enrolled;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
-        return "Student{" +
+        return "Applicant{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", schoolGrade=" + schoolAverage +
+                ", schoolAverage=" + schoolAverage +
                 ", facultyId=" + facultyId +
                 ", password='" + password + '\'' +
+                ", enrolled='" + enrolled + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }
