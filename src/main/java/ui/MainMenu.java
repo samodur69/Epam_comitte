@@ -1,6 +1,13 @@
 package ui;
 
+import dao.implementations.ApplicantImpl;
 import dao.implementations.ExamImpl;
+import dao.implementations.FacultyImpl;
+import dao.model.Applicant;
+import dao.model.Faculty;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -12,21 +19,30 @@ public class MainMenu {
                     "2. Applicant Sign in\n" +
                     "3. Test Area\n" +
                     "4. Admin login\n" +
+                    "5. Show enrolled students list" +
                     "0. Exit");
             switch (scanner.nextInt()) {
                 case 1:
-                    System.out.println("Sign up as new Applicant");
+                    NewApplicant.start();
                     break;
                 case 2:
                     System.out.println("Applicant sign in window");
                     break;
                 case 3:
                     System.out.println("test-area");
-                    ExamImpl ex = new ExamImpl();
-                    System.out.println(ex.getAll());
-                    System.out.println(ex.getById(10));
+                    ApplicantImpl ap = new ApplicantImpl();
+                    List<Applicant> test = new ArrayList<>();
+                    test = ap.getAll();
+//                    System.out.println(ap.getById(10001));
+                    List<Faculty> test1 = new ArrayList<>();
+                    FacultyImpl fac = new FacultyImpl();
+                    fac.getAll();
                     break;
                 case 4:
+                    System.out.println("Admin menu");
+                    break;
+                case 5:
+                    System.out.println("Enrolled Students list");
                     break;
                 case 0:
                     System.out.println("Good bye! See you later!");
