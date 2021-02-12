@@ -43,5 +43,6 @@ public class NewApplicant {
         int choice = scan.nextInt();
 //        while (!fac_list.contains(choice)
         applicantDb.create(applicant);
+        System.out.println("next step");
     }
 }
