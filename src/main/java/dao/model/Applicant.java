@@ -1,8 +1,10 @@
 package dao.model;
 
+import dao.implementations.ApplicantImpl;
+
 import java.util.Random;
 
-public class Applicant {
+public class Applicant extends ApplicantImpl {
     private int id;
     private String firstName;
     private String lastName;
@@ -14,6 +16,7 @@ public class Applicant {
 
     public Applicant () {
     }
+
 
     public Applicant (String firstName, String lastName, int schoolAverage, int facultyId) {
         this.firstName = firstName;
@@ -103,8 +106,8 @@ public class Applicant {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", schoolAverage=" + schoolAverage +
-                ", facultyId=" + facultyId +
+                ", school Average Grade " + schoolAverage +
+                ", Faculty " + facultyId +
                 ", password='" + password + '\'' +
                 ", enrolled='" + enrolled + '\'' +
                 ", email='" + email + '\'' +

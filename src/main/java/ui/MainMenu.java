@@ -30,13 +30,15 @@ public class MainMenu {
                     break;
                 case 3:
                     System.out.println("test-area");
-                    ApplicantImpl ap = new ApplicantImpl();
-                    List<Applicant> test = new ArrayList<>();
-                    test = ap.getAll();
+//                    ApplicantImpl ap = new ApplicantImpl();
+//                    List<Applicant> test = new ArrayList<>();
+//                    test = ap.getAll();
 //                    System.out.println(ap.getById(10001));
-                    List<Faculty> test1 = new ArrayList<>();
-                    FacultyImpl fac = new FacultyImpl();
-                    fac.getAll();
+//                    List<Faculty> test1 = new ArrayList<>();
+//                    FacultyImpl fac = new FacultyImpl();
+//                    fac.getAll();
+                    ExamImpl exam = new ExamImpl();
+                    System.out.println(exam.getIdByName("Java Basic"));
                     break;
                 case 4:
                     System.out.println("Admin menu");

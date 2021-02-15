@@ -16,9 +16,13 @@ public class ApplicantImpl implements ApplicantDao {
 
     @Override
     public void create(Applicant applicant) {
+//        String sqlCreate = "INSERT INTO STUDENTS " +
+//                "(FIRST_NAME, LAST_NAME, SCHOOL_AVG_SCORES, FACULTY_ID, ST_PASSWORD, ST_EMAIL) VALUES (?, ?, ?, (" +
+//                "SELECT FACULTY_ID FROM FACULTY_LIST WHERE FACULTY_NAME = ?), ?, ?)";
         String sqlCreate = "INSERT INTO STUDENTS " +
-                "(FIRST_NAME, LAST_NAME, SCHOOL_AVG_SCORES, FACULTY_ID, ST_PASSWORD, ST_EMAIL) VALUES (?, ?, ?, (" +
-                "SELECT FACULTY_ID FROM FACULTY_LIST WHERE FACULTY_NAME = ?), ?, ?)";
+                "(FIRST_NAME, LAST_NAME, SCHOOL_AVG_SCORES, FACULTY_ID, ST_PASSWORD, ST_EMAIL) VALUES (?, ?, ?, ?, ?, ?)";
+
+
         Connection conn = null;
         PreparedStatement ps = null;
         System.out.println(applicant.getPassword());
@@ -28,7 +32,8 @@ public class ApplicantImpl implements ApplicantDao {
             ps.setString(1, applicant.getFirstName());
             ps.setString(2, applicant.getLastName());
             ps.setInt(3, applicant.getSchoolAverage());
-            ps.setString(4, "Mathematics"); // TODO insert id. set faculty id in model
+//            ps.setString(4, "Mathematics"); // TODO insert id. set faculty id in model
+            ps.setInt(4, applicant.getFacultyId());
             ps.setString(5, applicant.getPassword());
             ps.setString(6, applicant.getEmail());
             ps.executeUpdate();

@@ -1,0 +1,38 @@
+package dao.model;
+
+public class ExaminationList {
+    private int studentId;
+    private int examId;
+    private int grade;
+
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
+
+    public int getExamId() {
+        return examId;
+    }
+
+    public void setExamId(int examId) {
+        this.examId = examId;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
+    @Override
+    public String toString() {
+        return "ExaminationList for student " + studentId +
+                ", examId=" + examId +
+                ", grade=" + grade;
+    }
+}
