@@ -1,23 +1,25 @@
 package ui;
 
 import dao.implementations.ExamImpl;
+import dao.implementations.ExaminationListImpl;
 import dao.implementations.FacultyImpl;
 import dao.model.Applicant;
+import dao.model.ExaminationList;
 import dao.model.Faculty;
 
 import java.util.*;
 
 public class NewApplicant {
 
+    Scanner scan = new Scanner(System.in);
+    private Applicant applicant = new Applicant();
+    private ExamImpl exam = new ExamImpl();
+    private ExaminationList record = new ExaminationList();
 
-    public void start() {
-        Scanner scan = new Scanner(System.in);
-        Applicant applicant = new Applicant();
+    public void start() throws InterruptedException {
+
         //////////// applicant.storeToDB() add method;
 //        ApplicantImpl applicantDb = new ApplicantImpl();
-        ExamImpl exam = new ExamImpl();
-
-
         applicant.setEnrolled("N"); // if student will be enrolled - change to Y
         System.out.println("Welcome to our university!\n" +
                 "Enter your First name:");
@@ -33,39 +35,45 @@ public class NewApplicant {
         applicant.setEmail(scan.nextLine());
         applicant.setPassword(Applicant.generatePin());
         System.out.println("Your PIN! Use for login later " + applicant.getPassword());
-        System.out.println("Enter your school average score (1....100):");
-        applicant.setSchoolAverage(scan.nextInt());
-        // start func
+        System.out.println("Enter your school average grade (1....100):");
+        applicant.setSchoolAverage(inputGrade());
 
-
-        int facultyId = this.choiceFaculty();
-        applicant.setFacultyId(facultyId);
-
-
-        /// end func
+        applicant.setFacultyId(this.choiceFaculty());
         applicant.create(applicant);
+        // AFTER CREATION ASK DB ABOUT STUDENT_ID AND SET IT FOR THE NEXT STEP
         System.out.println("You must enter exams Grades");
-        // get_exams_for_chosen_faculty
         List<Integer> exams = exam.getByFaculty(applicant.getFacultyId());
         for (Integer el : exams) {
+            System.out.println(applicant.getId());
             System.out.println("Enter mark for " + exam.getNameById(el));
-            int mark = scan.nextInt();
-            System.out.println(mark);
+
+            record.setStudentId(applicant.getId());
+            record.setExamId(el);
+            record.setGrade(inputGrade());
+            record.create(record);
 //            System.out.println(exam.getById()
 //            System.out.println(integer);
-
+//      add to DB record exam/student/grade
         }
+
+        System.out.println("\nGood luck! Hope to see you at the university! \n");
+        Thread.sleep(100);
     }
 
+    /**
+     * func to choice faculty. Select from DB table FACULTY_LIST all faculties
+     * and read user input
+     * @return int id of chosen faculty
+     */
     private int choiceFaculty() {
         Scanner scan = new Scanner(System.in);
         FacultyImpl facultyImpl = new FacultyImpl();
         List<Faculty> facultyList;
 
-        System.out.println("Let`s choice faculty (type Faculty ID):");
+        System.out.println("Let`s choice faculty (input Faculty ID):");
         facultyList = facultyImpl.getAll();
-        for (Faculty faculty: facultyList)
-            System.out.println(faculty.getFacultyId() + " - " + faculty.getFacultyName());
+        for (Faculty el: facultyList)
+            System.out.println(el.getFacultyId() + " - " + el.getFacultyName());
         int choice;
         while (true) {
             choice = scan.nextInt();
@@ -75,6 +83,22 @@ public class NewApplicant {
                 }
             }
             System.out.println("There is no faculty with entered id. Please try again");
+        }
+    }
+
+    /**
+     * check user input for range 1...100
+     * @return correct input
+     */
+    private int inputGrade() {
+//        Scanner scan = new Scanner(System.in);
+        int grade;
+        while (true) {
+            grade = scan.nextInt();
+            if (1 <= grade && grade <= 100) {
+                return grade;
+            }
+            System.out.println("Wrong input. Grade must be in range 1 ... 100");
         }
     }
 }

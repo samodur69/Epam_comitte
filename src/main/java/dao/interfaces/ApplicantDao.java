@@ -10,4 +10,8 @@ public interface ApplicantDao extends BaseDao<Applicant> {
 
     List<Applicant> getByEnrolled(boolean isStudent);
 
+    Applicant getByEmail(String email);
+
+    int getIdByEmail(String email);
+
 }
