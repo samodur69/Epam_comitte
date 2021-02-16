@@ -17,7 +17,9 @@ public class ApplicantImpl implements ApplicantDao {
     @Override
     public void create(Applicant applicant) {
         String sqlCreate = "INSERT INTO STUDENTS " +
-                "(FIRST_NAME, LAST_NAME, SCHOOL_AVG_SCORES, FACULTY_ID, ST_PASSWORD, ST_EMAIL) VALUES (?, ?, ?, ?, ?, ?)";
+                "(FIRST_NAME, LAST_NAME, SCHOOL_AVG_SCORES, FACULTY_ID, ST_PASSWORD, ST_EMAIL, ENROLLED) " +
+                "VALUES " +
+                "(?, ?, ?, ?, ?, ?, ?)";
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -30,6 +32,7 @@ public class ApplicantImpl implements ApplicantDao {
             ps.setInt(4, applicant.getFacultyId());
             ps.setString(5, applicant.getPassword());
             ps.setString(6, applicant.getEmail());
+            ps.setString(7, applicant.getEnrolled());
             ps.executeUpdate();
         } catch (SQLException e) {
             logger.info("Can`t add new applicant to DB");

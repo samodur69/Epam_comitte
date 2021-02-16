@@ -1,8 +1,7 @@
 package dao.model;
 
 import dao.implementations.ApplicantImpl;
-
-import java.util.Random;
+import util.Utils;
 
 public class Applicant extends ApplicantImpl {
     private int id;
@@ -15,6 +14,8 @@ public class Applicant extends ApplicantImpl {
     private String email;
 
     public Applicant () {
+        this.enrolled = "N";
+        this.password = Utils.generatePin();
     }
 
 
@@ -23,18 +24,10 @@ public class Applicant extends ApplicantImpl {
         this.lastName = lastName;
         this.schoolAverage = schoolAverage;
         this.facultyId = facultyId;
-        this.password = generatePin();
+        this.enrolled = "N";
+        this.password = Utils.generatePin();
     }
 
-
-    public static String generatePin() {
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            sb.append(random.nextInt(10));
-        }
-        return sb.toString();
-    }
 
     public int getId() {
         return id;
