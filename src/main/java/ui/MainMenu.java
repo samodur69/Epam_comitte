@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
-    public static void start() {
+    public static void start() throws InterruptedException {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("" +
@@ -19,7 +19,7 @@ public class MainMenu {
                     "2. Applicant Sign in\n" +
                     "3. Test Area\n" +
                     "4. Admin login\n" +
-                    "5. Show enrolled students list" +
+                    "5. Show enrolled students list\n" +
                     "0. Exit");
             switch (scanner.nextInt()) {
                 case 1:
@@ -31,15 +31,8 @@ public class MainMenu {
                     break;
                 case 3:
                     System.out.println("test-area");
-//                    ApplicantImpl ap = new ApplicantImpl();
-//                    List<Applicant> test = new ArrayList<>();
-//                    test = ap.getAll();
-//                    System.out.println(ap.getById(10001));
-//                    List<Faculty> test1 = new ArrayList<>();
-//                    FacultyImpl fac = new FacultyImpl();
-//                    fac.getAll();
-                    ExamImpl exam = new ExamImpl();
-                    System.out.println(exam.getIdByName("Java Basic"));
+//                    ExamImpl exam = new ExamImpl();
+//                    System.out.println(exam.getIdByName("Java Basic"));
                     break;
                 case 4:
                     System.out.println("Admin menu");
