@@ -1,7 +1,6 @@
 package ui;
 
 import dao.implementations.ExamImpl;
-import dao.implementations.ExaminationListImpl;
 import dao.implementations.FacultyImpl;
 import dao.model.Applicant;
 import dao.model.ExaminationList;
@@ -27,7 +26,7 @@ public class NewApplicant {
         System.out.println("Enter your Last Name:");
         applicant.setLastName(scan.nextLine());
         System.out.println("Enter your email. It will use for login later");
-//        TODO regex check email rebuild
+//        TODO regex check email rebuild and check email for unique
         while (!scan.hasNext("\\S+@\\S+\\.\\S+")) {
             System.out.println("wrong email format. Please try again");
             scan.nextLine();
@@ -37,27 +36,23 @@ public class NewApplicant {
         System.out.println("Your PIN! Use for login later " + applicant.getPassword());
         System.out.println("Enter your school average grade (1....100):");
         applicant.setSchoolAverage(inputGrade());
-
         applicant.setFacultyId(this.choiceFaculty());
         applicant.create(applicant);
-        // AFTER CREATION ASK DB ABOUT STUDENT_ID AND SET IT FOR THE NEXT STEP
+        enterExamGrades(applicant.getIdByEmail(applicant.getEmail()));
+        System.out.println("\nGood luck! Hope to see you at the university! \n");
+        Thread.sleep(100);
+    }
+
+    private void enterExamGrades(int studentId) {
         System.out.println("You must enter exams Grades");
         List<Integer> exams = exam.getByFaculty(applicant.getFacultyId());
         for (Integer el : exams) {
-            System.out.println(applicant.getId());
             System.out.println("Enter mark for " + exam.getNameById(el));
-
             record.setStudentId(applicant.getId());
             record.setExamId(el);
             record.setGrade(inputGrade());
             record.create(record);
-//            System.out.println(exam.getById()
-//            System.out.println(integer);
-//      add to DB record exam/student/grade
         }
-
-        System.out.println("\nGood luck! Hope to see you at the university! \n");
-        Thread.sleep(100);
     }
 
     /**
