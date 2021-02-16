@@ -12,7 +12,7 @@ public class DBConnection {
     private final String DB_USER = "ADMIN";
     private final String DB_PASSWORD = "Kethum,Bashum21";
 //    private final String DB_USER = "EPAM1";
-//    private final String DB_PASSWORD = "AdmissionComitte1";
+//    private final String DB_PASSWORD = "AdmissionCommitte1";
     private static final Logger logger = LoggerFactory.getLogger(DBConnection.class);
     private static DBConnection instance;
 
@@ -43,7 +43,6 @@ public class DBConnection {
         try {
             if (connection != null) {
                 connection.close();
-//                connection = null;
             }
         } catch (SQLException e) {
             System.out.println("Troubles with closing connection");
