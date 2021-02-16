@@ -23,19 +23,16 @@ public class NewApplicant {
 
     public void start() throws InterruptedException {
 
-//        Applicant applicant = new Applicant();
+        System.out.println("Welcome to our university!");
 
-        System.out.println("Welcome to our university!\n" +
-                "Enter your First name:");
+        System.out.println("Enter your First name:");
         applicant.setFirstName(scan.nextLine());
+
         System.out.println("Enter your Last Name:");
         applicant.setLastName(scan.nextLine());
+
         applicant.setEmail(emailInputValidate());
-
-
-        System.out.println("Your PIN! Use for login later " + applicant.getPassword());
-
-
+        System.out.println("\nYour PIN! Use for login later " + applicant.getPassword() + "\n");
 
         System.out.println("Enter your school average grade (1....100):");
         applicant.setSchoolAverage(inputGrade());
@@ -43,10 +40,15 @@ public class NewApplicant {
         applicant.setFacultyId(choiceFaculty());
         applicantService.create(applicant);
         enterExamGrades();
+
         System.out.println("\nGood luck! Hope to see you at the university! \n");
         Thread.sleep(100);
     }
 
+    /**
+     * Enter exam grades for chosen faculty
+     * Directly to applicant object
+     */
     private void enterExamGrades() {
         ExaminationList record;
         System.out.println("You must enter exams Grades");
