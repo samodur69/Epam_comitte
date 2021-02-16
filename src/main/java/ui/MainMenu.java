@@ -23,7 +23,8 @@ public class MainMenu {
                     "0. Exit");
             switch (scanner.nextInt()) {
                 case 1:
-                    NewApplicant.start();
+                    NewApplicant createApplicant = new NewApplicant();
+                    createApplicant.start();
                     break;
                 case 2:
                     System.out.println("Applicant sign in window");
