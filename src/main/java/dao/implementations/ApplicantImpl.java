@@ -91,7 +91,6 @@ public class ApplicantImpl implements ApplicantDao {
     }
 
 
-
     @Override
     public Applicant getById(int id) {
         return null;
