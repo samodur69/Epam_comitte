@@ -1,9 +1,20 @@
 package dao.model;
 
-public class ExaminationList {
+import dao.implementations.ExaminationListImpl;
+
+public class ExaminationList extends ExaminationListImpl {
     private int studentId;
     private int examId;
     private int grade;
+
+    public ExaminationList() {
+    }
+
+    public ExaminationList(int studentId, int examId, int grade) {
+        this.studentId = studentId;
+        this.examId = examId;
+        this.grade = grade;
+    }
 
     public int getStudentId() {
         return studentId;
