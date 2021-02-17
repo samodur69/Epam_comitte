@@ -26,10 +26,10 @@ public class NewApplicant {
         System.out.println("Welcome to our university!");
 
         System.out.println("Enter your First name:");
-        applicant.setFirstName(scan.nextLine());
+        applicant.setFirstName(inputNameValidator());
 
         System.out.println("Enter your Last Name:");
-        applicant.setLastName(scan.nextLine());
+        applicant.setLastName(inputNameValidator());
 
         applicant.setEmail(emailInputValidate());
         System.out.println("\nYour PIN! Use for login later " + applicant.getPassword() + "\n");
@@ -125,6 +125,28 @@ public class NewApplicant {
                 return grade;
             }
             System.out.println("Wrong input. Grade must be in range 1 ... 100");
+        }
+    }
+
+    /**
+     * Input Validator. Check only letters input. Transform input to Upper + lowercase correctly
+     * @return formatted name
+     */
+    private String inputNameValidator() {
+        String nameValidator = "[A-Z][a-z]{1,29}";
+        String nameLowercase = "[a-zA-z]{0,30}";
+        String name;
+        while (true) {
+            name = scan.nextLine();
+            if (name.matches(nameValidator)) {
+                return name;
+            } else {
+                if (name.matches(nameLowercase)) {
+                    return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+                } else {
+                    System.out.println("Please use only letters");
+                }
+            }
         }
     }
 }
