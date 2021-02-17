@@ -1,9 +1,8 @@
 package dao.model;
 
-import dao.implementations.ApplicantImpl;
 import util.Utils;
 
-public class Applicant extends ApplicantImpl {
+public class Applicant {
     private int id;
     private String firstName;
     private String lastName;

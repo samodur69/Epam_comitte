@@ -3,26 +3,52 @@ package dao.implementations;
 import dao.interfaces.FacultyDao;
 import dao.model.Faculty;
 import data.DBConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FacultyImpl implements FacultyDao {
+
+    private static final Logger logger = LoggerFactory.getLogger(FacultyImpl.class);
+
+    @Override
+    public void create(Faculty faculty) {
+        String sqlCreate = "INSERT INTO FACULTY_LIST " +
+                "(FACULTY_NAME, FACULTY_CAPACITY, FACULTY_MIN_GRADE) " +
+                "VALUES " +
+                "(?, ?, ?)";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sqlCreate);
+            ps.setString(1, faculty.getFacultyName());
+            ps.setInt(2, faculty.getFacultyCapacity());
+            ps.setInt(3, faculty.getMinGrade());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            logger.info("Can`t add new faculty to DB");
+            e.printStackTrace();
+        } finally {
+            DBConnection.close(ps, conn);
+        }
+    }
 
     @Override
     public List<Faculty> getAll() {
         List<Faculty> faults = new ArrayList<>();
         Faculty faculty;
         String sqlGetAll = "SELECT * FROM FACULTY_LIST";
-        Connection conn = null;
-        Statement st = null;
-        ResultSet rs = null;
+        Connection conn;
+        Statement st;
+        ResultSet rs;
         try {
             conn = DBConnection.getConnection();
+            if (conn == null) throw new AssertionError();
             st = conn.createStatement();
             st.execute(sqlGetAll);
             rs = st.getResultSet();
@@ -33,13 +59,19 @@ public class FacultyImpl implements FacultyDao {
                 faculty.setFacultyCapacity(rs.getInt("FACULTY_CAPACITY"));
                 faculty.setMinGrade(rs.getInt("FACULTY_MIN_GRADE"));
                 faults.add(faculty);
-//                System.out.println(faculty.toString());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return faults;
     }
+
+
+
+
+
+
+
 
     @Override
     public Faculty getById(int id) {
@@ -56,10 +88,6 @@ public class FacultyImpl implements FacultyDao {
 
     }
 
-    @Override
-    public void create(Faculty faculty) {
-
-    }
 
     @Override
     public void setCapacity(String facultyName) {

@@ -1,8 +1,6 @@
 package dao.model;
 
-import dao.implementations.ExaminationListImpl;
-
-public class ExaminationList extends ExaminationListImpl {
+public class ExaminationList {
     private int studentId;
     private int examId;
     private int grade;

@@ -16,7 +16,7 @@ public class ApplicantImpl implements ApplicantDao {
 
     @Override
     public void create(Applicant applicant) {
-        String sqlCreate = "INSERT INTO STUDENTS " +
+        String sqlCreate = "INSERT INTO APPLICANTS " +
                 "(FIRST_NAME, LAST_NAME, SCHOOL_AVG_SCORES, FACULTY_ID, ST_PASSWORD, ST_EMAIL, ENROLLED) " +
                 "VALUES " +
                 "(?, ?, ?, ?, ?, ?, ?)";
@@ -46,7 +46,7 @@ public class ApplicantImpl implements ApplicantDao {
     public List<Applicant> getAll() {
         List<Applicant> applicants = new ArrayList<>();
         Applicant applicant;
-        String sqlGetAll = "SELECT * FROM STUDENTS";
+        String sqlGetAll = "SELECT * FROM APPLICANTS";
         Connection conn = null;
         Statement st = null;
         ResultSet rs = null;
@@ -79,7 +79,7 @@ public class ApplicantImpl implements ApplicantDao {
     @Override
     public Applicant getByEmail(String email) {
         Applicant applicant;
-        String sqlGetByEmail = "SELECT * FROM STUDENTS WHERE ST_EMAIL = ?";
+        String sqlGetByEmail = "SELECT * FROM APPLICANTS WHERE ST_EMAIL = ?";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -111,7 +111,7 @@ public class ApplicantImpl implements ApplicantDao {
 
     @Override
     public int getIdByEmail(String email) {
-        String sqlGetByEmail = "SELECT ID FROM STUDENTS WHERE ST_EMAIL = ?";
+        String sqlGetByEmail = "SELECT ID FROM APPLICANTS WHERE ST_EMAIL = ?";
 
         int studentId;
         Connection conn = null;
@@ -137,7 +137,7 @@ public class ApplicantImpl implements ApplicantDao {
 
     @Override
     public boolean checkEmailUnique(String email) {
-        String sqlGetByEmail = "SELECT * FROM STUDENTS WHERE ST_EMAIL = ?";
+        String sqlGetByEmail = "SELECT * FROM APPLICANTS WHERE ST_EMAIL = ?";
 
         String emailDb = "";
         Connection conn = null;
@@ -160,6 +160,13 @@ public class ApplicantImpl implements ApplicantDao {
         }
         return false;
     }
+
+
+
+
+
+
+
 
     @Override
     public List<Applicant> getByFaculty(String faculty) {
@@ -186,7 +193,4 @@ public class ApplicantImpl implements ApplicantDao {
     public void delete(int id) {
 
     }
-
-
-
 }
