@@ -22,10 +22,12 @@ public class MainMenu {
                     new NewApplicant().start();
                     break;
                 case 2:
-                    System.out.println("Applicant sign in window");
+                    new ApplicantMenu().studentLogIn();
                     break;
                 case 3:
                     System.out.println("test-area");
+                    ApplicantImpl appService = new ApplicantImpl();
+                    System.out.println(appService.getTotalMark(10003));
                     System.out.println();
                     break;
                 case 4:

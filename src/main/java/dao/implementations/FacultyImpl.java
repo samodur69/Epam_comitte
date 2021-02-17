@@ -100,7 +100,23 @@ public class FacultyImpl implements FacultyDao {
     }
 
     @Override
-    public void getNameById(int id) {
-
+    public String getNameById(int id) {
+        String sqlGetName = "SELECT FACULTY_NAME FROM FACULTY_LIST WHERE ID = ?";
+        String facultyName = "";
+        Connection conn;
+        PreparedStatement ps;
+        ResultSet rs;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sqlGetName);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                facultyName = rs.getString("FACULTY_NAME");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return facultyName;
     }
 }

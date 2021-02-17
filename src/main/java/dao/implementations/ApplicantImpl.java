@@ -161,12 +161,44 @@ public class ApplicantImpl implements ApplicantDao {
         return false;
     }
 
-
-
-
-
-
-
+    @Override
+    public int getTotalMark(int id) {
+        String sqlTotalById = "SELECT TotalMark " +
+                "FROM " +
+                "(select " +
+                "a.student_id as id, " +
+                "b.faculty_id as facultet, " +
+                "sum(a.grade) + b.school_avg_scores as TotalMark " +
+                "from " +
+                "examination_records a, " +
+                "applicants b " +
+                "where " +
+                "a.student_id = b.id " +
+                "group by " +
+                "a.student_id, b.school_avg_scores, b.faculty_id) " +
+                "WHERE " +
+                "id = ?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int totalMark = 0;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sqlTotalById);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                totalMark = rs.getInt("TOTALMARK");
+            }
+            return totalMark;
+        } catch (SQLException e) {
+            logger.info("Troubles with getting total mark by Student`s id");
+            e.printStackTrace();
+        } finally {
+            DBConnection.close(rs, ps, conn);
+        }
+        return 0;
+    }
 
     @Override
     public List<Applicant> getByFaculty(String faculty) {

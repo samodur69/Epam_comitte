@@ -14,6 +14,7 @@ public class App {
             MainMenu.start();
         } catch (Exception e) {
             logger.info("big troubles");
+            e.printStackTrace();
         } finally {
             DBConnection.close(connection);
         }

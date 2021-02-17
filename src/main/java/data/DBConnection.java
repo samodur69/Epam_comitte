@@ -2,9 +2,13 @@ package data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.GetProperties;
 
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 
 public class DBConnection {
 
@@ -13,12 +17,24 @@ public class DBConnection {
     private final String DB_PASSWORD = "Kethum,Bashum21";
 //    private final String DB_USER = "EPAM1";
 //    private final String DB_PASSWORD = "AdmissionCommitte1";
+//    private String DB_URL;
+//    private String DB_USER;
+//    private String DB_PASSWORD;
     private static final Logger logger = LoggerFactory.getLogger(DBConnection.class);
     private static DBConnection instance;
 
     private DBConnection() {
         try {
             Class.forName("oracle.jdbc.driver.OracleConnection");
+//            Properties properties = new Properties();
+//            try (FileInputStream is = new FileInputStream("/Users/apple/_Projects/Epam_comitte/src/main/resources/app.properties")) {
+//                properties.load(is);
+//                DB_URL = properties.getProperty("DB_URL");
+//                DB_USER = properties.getProperty("DB_USER");
+//                DB_PASSWORD = properties.getProperty("DB_PASSWORD");
+//            } catch (IOException e) {
+//                logger.info("can`t find properties file");
+//            }
         } catch (ClassNotFoundException e) {
             System.out.println("Troubles with DB Driver");
             e.printStackTrace();
