@@ -26,12 +26,11 @@ public class MainMenu {
                     break;
                 case 3:
                     System.out.println("test-area");
-//                    ExamImpl exam = new ExamImpl();
-//                    System.out.println(exam.getIdByName("Java Basic"));
                     System.out.println();
                     break;
                 case 4:
                     System.out.println("Admin menu");
+                    new UniversityAdministration().start();
                     break;
                 case 5:
                     System.out.println("Enrolled Students list");
