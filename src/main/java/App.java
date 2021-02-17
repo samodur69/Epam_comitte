@@ -1,19 +1,19 @@
-import dao.model.ExaminationList;
 import data.DBConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ui.MainMenu;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-
 
 public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) {
-        Connection connection;
-        connection = DBConnection.getConnection();
+        Connection connection = DBConnection.getConnection();
         try {
             MainMenu.start();
         } catch (Exception e) {
-            System.out.println("big troubles");
+            logger.info("big troubles");
         } finally {
             DBConnection.close(connection);
         }

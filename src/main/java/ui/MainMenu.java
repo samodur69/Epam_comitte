@@ -1,18 +1,14 @@
 package ui;
 
 import dao.implementations.ApplicantImpl;
-import dao.implementations.ExamImpl;
-import dao.implementations.FacultyImpl;
-import dao.model.Applicant;
-import dao.model.Faculty;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
+
+    static Scanner scanner = new Scanner(System.in);
+
     public static void start() throws InterruptedException {
-        Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("" +
                     "1. Sign up as new Applicant\n" +
@@ -23,8 +19,7 @@ public class MainMenu {
                     "0. Exit");
             switch (scanner.nextInt()) {
                 case 1:
-                    NewApplicant createApplicant = new NewApplicant();
-                    createApplicant.start();
+                    new NewApplicant().start();
                     break;
                 case 2:
                     System.out.println("Applicant sign in window");
@@ -33,6 +28,7 @@ public class MainMenu {
                     System.out.println("test-area");
 //                    ExamImpl exam = new ExamImpl();
 //                    System.out.println(exam.getIdByName("Java Basic"));
+                    System.out.println();
                     break;
                 case 4:
                     System.out.println("Admin menu");
