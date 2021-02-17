@@ -136,6 +136,32 @@ public class ApplicantImpl implements ApplicantDao {
     }
 
     @Override
+    public boolean checkEmailUnique(String email) {
+        String sqlGetByEmail = "SELECT * FROM STUDENTS WHERE ST_EMAIL = ?";
+
+        String emailDb = "";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sqlGetByEmail);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                emailDb = rs.getString("ST_EMAIL");
+            }
+            return !email.equals(emailDb);
+        } catch (SQLException e) {
+            logger.info("Troubles with check email unique");
+            e.printStackTrace();
+        } finally {
+            DBConnection.close(rs, ps, conn);
+        }
+        return false;
+    }
+
+    @Override
     public List<Applicant> getByFaculty(String faculty) {
         return null;
     }
