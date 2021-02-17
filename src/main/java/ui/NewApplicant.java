@@ -12,7 +12,7 @@ import java.util.*;
 
 public class NewApplicant {
 
-    static Scanner scan = new Scanner(System.in);
+    private final Scanner scan = new Scanner(System.in);
     private final ApplicantImpl applicantService = new ApplicantImpl();
     private final ExaminationListImpl examRecordService = new ExaminationListImpl();
     private final ExamImpl examService = new ExamImpl();
@@ -39,6 +39,7 @@ public class NewApplicant {
 
         applicant.setFacultyId(choiceFaculty());
         applicantService.create(applicant);
+        applicant.setId(applicantService.getIdByEmail(applicant.getEmail()));
         enterExamGrades();
 
         System.out.println("\nGood luck! Hope to see you at the university! \n");
@@ -51,12 +52,12 @@ public class NewApplicant {
      */
     private void enterExamGrades() {
         ExaminationList record;
-        System.out.println("You must enter exams Grades");
-        List<Integer> exams = examService.getByFaculty(this.applicant.getFacultyId());
+        System.out.println("\nNow you need to enter the grades for the exams :");
+        List<Integer> exams = examService.getByFaculty(applicant.getFacultyId());
         for (Integer el : exams) {
             record = new ExaminationList();
             System.out.println("Enter mark for " + examService.getNameById(el));
-            record.setStudentId(this.applicant.getId());
+            record.setStudentId(applicant.getId());
             record.setExamId(el);
             record.setGrade(inputGrade());
             examRecordService.create(record);
@@ -69,20 +70,22 @@ public class NewApplicant {
      * @return user email
      */
     private String emailInputValidate() {
-// TODO
+
         String email;
+
         System.out.println("Enter your email. It will use for login later");
-//        while (true) {
-//            email = scan.nextLine();
-//            if ( pattern equals input && mail is unique)
-//
-//        }
-//        while (!scan.hasNext("\\S+@\\S+\\.\\S+")) {
-//            System.out.println("wrong email format. Please try again");
-//            scan.next();
-//        }
-        email = scan.nextLine();
-        return email;
+        while (true) {
+            email = scan.nextLine().toLowerCase();  // to lowercase
+            if (email.matches("\\S+@\\S+\\.\\S+")) {
+                if (applicantService.checkEmailUnique(email)) {
+                    return email;
+                } else {
+                    System.out.println("Sorry, that email address is already use. Please try again");
+                }
+            } else {
+                System.out.println("wrong email format. Please try again");
+            }
+        }
     }
 
     /**
