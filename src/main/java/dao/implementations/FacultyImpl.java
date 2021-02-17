@@ -14,7 +14,7 @@ import java.util.List;
 public class FacultyImpl implements FacultyDao {
 
     @Override
-    public List getAll() {
+    public List<Faculty> getAll() {
         List<Faculty> faults = new ArrayList<>();
         Faculty faculty;
         String sqlGetAll = "SELECT * FROM FACULTY_LIST";
