@@ -5,7 +5,7 @@ import java.util.List;
 public interface BaseDao<T> {
     List<T> getAll();
     T getById(int id);
-    void update(T obj);
-    void delete(int id);
-    void create(T obj); //create
+    int update(T obj);
+    int delete(int id);
+    int create(T obj); //create
 }
