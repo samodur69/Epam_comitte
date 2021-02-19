@@ -14,9 +14,7 @@ public class DBConnection {
 
     private final String DB_URL="jdbc:oracle:thin:@firsttestbase_medium?TNS_ADMIN=/Users/apple/_Projects/Epam_comitte/src/main/resources/Wallet_FirstTestBase";
     private final String DB_USER = "ADMIN";
-    private final String DB_PASSWORD = "Kethum,Bashum21";
-//    private final String DB_USER = "EPAM1";
-//    private final String DB_PASSWORD = "AdmissionCommitte1";
+    private final String DB_PASSWORD = "AdmissionCommitte1";
 //    private String DB_URL;
 //    private String DB_USER;
 //    private String DB_PASSWORD;
