@@ -33,8 +33,4 @@ public class Exam {
         return examId == exam.examId && Objects.equals(examName, exam.examName);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(examId, examName);
-    }
 }
