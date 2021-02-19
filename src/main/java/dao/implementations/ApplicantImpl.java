@@ -58,7 +58,7 @@ public class ApplicantImpl implements ApplicantDao {
                 "FACULTY_ID = ?, " +
                 "ST_PASSWORD = ?, " +
                 "ST_EMAIL = ?, " +
-                "ENROLLED = ?)";
+                "ENROLLED = ?";
 
         Connection conn = null;
         PreparedStatement ps = null;
