@@ -1,5 +1,6 @@
 package util;
 
+import dao.implementations.ApplicantImpl;
 import dao.implementations.ExaminationListImpl;
 import dao.implementations.FacultyImpl;
 import dao.model.ExaminationList;
@@ -23,6 +24,7 @@ public class Utils {
     public static void createExamRecords() {
         ExaminationListImpl ex = new ExaminationListImpl();
         FacultyImpl fac = new FacultyImpl();
+        ApplicantImpl appService = new ApplicantImpl ();
         List<Faculty> facultyList;
         List<Integer> list_id = new ArrayList<>();
         facultyList = fac.getAll();
@@ -30,7 +32,7 @@ public class Utils {
             list_id.add(el.getFacultyId());
         }
         SecureRandom r = new SecureRandom();
-        for (int i = 10000; i < 10014; i++) {
+        for (int i = 0; i < appService.getAll().size (); i++) {
             List<Integer> copy = new ArrayList<>(list_id);
             for (int j = 0; j < 3; j++) {
                 int randomIndex = r.nextInt(copy.size());
