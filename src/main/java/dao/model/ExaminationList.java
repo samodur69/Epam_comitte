@@ -1,6 +1,7 @@
 package dao.model;
 
 public class ExaminationList {
+    private int recordId;
     private int studentId;
     private int examId;
     private int grade;
@@ -38,10 +39,20 @@ public class ExaminationList {
         this.grade = grade;
     }
 
+    public int getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(int recordId) {
+        this.recordId = recordId;
+    }
+
     @Override
     public String toString() {
-        return "ExaminationList for student " + studentId +
-                ", examId=" + examId +
-                ", grade=" + grade;
+        return "ExaminationList " +
+                "# " + recordId +
+                ". Applicant" + studentId +
+                ", examId - " + examId +
+                ", grade - " + grade;
     }
 }
