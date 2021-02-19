@@ -6,6 +6,15 @@ public class Faculty {
     private int facultyCapacity;
     private int minGrade;
 
+    public Faculty() {
+    }
+
+    public Faculty(String facultyName, int facultyCapacity, int minGrade) {
+        this.facultyName = facultyName;
+        this.facultyCapacity = facultyCapacity;
+        this.minGrade = minGrade;
+    }
+
     public int getFacultyId() {
         return facultyId;
     }

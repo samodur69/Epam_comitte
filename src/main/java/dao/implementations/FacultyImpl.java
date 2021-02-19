@@ -15,7 +15,7 @@ public class FacultyImpl implements FacultyDao {
     private static final Logger logger = LoggerFactory.getLogger(FacultyImpl.class);
 
     @Override
-    public void create(Faculty faculty) {
+    public int create(Faculty faculty) {
         String sqlCreate = "INSERT INTO FACULTY_LIST " +
                 "(FACULTY_NAME, FACULTY_CAPACITY, FACULTY_MIN_GRADE) " +
                 "VALUES " +
@@ -23,32 +23,33 @@ public class FacultyImpl implements FacultyDao {
 
         Connection conn = null;
         PreparedStatement ps = null;
+        int rows = 0;
         try {
             conn = DBConnection.getConnection();
             ps = conn.prepareStatement(sqlCreate);
             ps.setString(1, faculty.getFacultyName());
             ps.setInt(2, faculty.getFacultyCapacity());
             ps.setInt(3, faculty.getMinGrade());
-            ps.executeUpdate();
-        } catch (SQLException e) {
+            rows = ps.executeUpdate();
+        } catch (SQLException | NullPointerException e) {
             logger.info("Can`t add new faculty to DB");
             e.printStackTrace();
         } finally {
             DBConnection.close(ps, conn);
         }
+        return rows;
     }
 
     @Override
     public List<Faculty> getAll() {
-        List<Faculty> faults = new ArrayList<>();
+        List<Faculty> facultyList = new ArrayList<>();
         Faculty faculty;
         String sqlGetAll = "SELECT * FROM FACULTY_LIST";
-        Connection conn;
+        Connection conn = null;
         Statement st;
         ResultSet rs;
         try {
             conn = DBConnection.getConnection();
-            if (conn == null) throw new AssertionError();
             st = conn.createStatement();
             st.execute(sqlGetAll);
             rs = st.getResultSet();
@@ -58,45 +59,96 @@ public class FacultyImpl implements FacultyDao {
                 faculty.setFacultyName(rs.getString("FACULTY_NAME"));
                 faculty.setFacultyCapacity(rs.getInt("FACULTY_CAPACITY"));
                 faculty.setMinGrade(rs.getInt("FACULTY_MIN_GRADE"));
-                faults.add(faculty);
+                facultyList.add(faculty);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | NullPointerException e) {
             e.printStackTrace();
+        } finally {
+            DBConnection.close(conn);
         }
-        return faults;
+        return facultyList;
     }
 
+    @Override
+    public int update(Faculty faculty) {
+        String sqlUpdate = "UPDATE" +
+                "FACULTY_LIST" +
+                "SET" +
+                "FACULTY_ID = ?, " +
+                "FACULTY_NAME = ?, " +
+                "FACULTY_CAPACITY = ?, " +
+                "FACULTY_MIN_GRADE = ?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int rows;
+        try {
+            conn = DBConnection.getConnection ();
+            ps = conn.prepareStatement (sqlUpdate);
+            ps.setInt (1, faculty.getFacultyId ());
+            ps.setString (2, faculty.getFacultyName ());
+            ps.setInt (3, faculty.getFacultyCapacity ());
+            ps.setInt (4, faculty.getMinGrade ());
+            rows = ps.executeUpdate();
+            return rows;
+        } catch (SQLException e) {
+            logger.warn ("Error when update faculty");
+            e.printStackTrace ();
+        } finally {
+            DBConnection.close (ps, conn);
+        }
+        return 0;
+    }
 
-
-
-
-
-
+    @Override
+    public int delete(int id) {
+        String sqlDelete = "DELETE" +
+                "FROM FACULTY_LIST" +
+                "WHERE ID = ?";
+        int rows;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement (sqlDelete);
+            ps.setInt (1 , id);
+            rows = ps.executeUpdate();
+            return rows;
+        } catch (SQLException e) {
+            logger.warn("Error when try to delete record with faculty by id");
+            e.printStackTrace();
+        } finally {
+            DBConnection.close (ps, conn);
+        }
+        return 0;
+    }
 
     @Override
     public Faculty getById(int id) {
+        Faculty faculty;
+        String sqlGetById = "SELECT * FROM FACULTY_LIST WHERE ID = ?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement (sqlGetById);
+            ps.setInt (1, id);
+            rs = ps.executeQuery ();
+            while (rs.next()) {
+                faculty = new Faculty();
+                faculty.setFacultyId (rs.getInt("FACULTY_ID"));
+                faculty.setFacultyName (rs.getString("FACULTY_NAME"));
+                faculty.setFacultyCapacity (rs.getInt ("FACULTY_CAPACITY"));
+                faculty.setMinGrade (rs.getInt("FACULTY_MIN_GRADE"));
+                return faculty;
+            }
+        } catch (SQLException e) {
+            logger.warn("Troubles with getting faculty by his ID");
+            e.printStackTrace();
+        } finally {
+            DBConnection.close(rs, ps, conn);
+        }
         return null;
-    }
-
-    @Override
-    public void update(Faculty faculty) {
-
-    }
-
-    @Override
-    public void delete(int id) {
-
-    }
-
-
-    @Override
-    public void setCapacity(String facultyName) {
-
-    }
-
-    @Override
-    public void setMinGrade(String facultyName) {
-
     }
 
     @Override

@@ -4,7 +4,5 @@ import dao.model.Faculty;
 
 public interface FacultyDao extends BaseDao<Faculty> {
 
-    void setCapacity(String facultyName);
-    void setMinGrade(String facultyName);
-    String getNameById(int id);
+    String getNameById(int facultyId);
 }
