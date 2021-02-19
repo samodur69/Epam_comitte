@@ -1,12 +1,21 @@
 package ui;
 
+import dao.implementations.ExamImpl;
+import dao.implementations.ExaminationListImpl;
+import dao.model.Exam;
+import dao.model.ExaminationList;
 import util.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class UniversityAdministration {
 
     private final static Scanner scan = new Scanner(System.in);
+    private final ExaminationListImpl recordService = new ExaminationListImpl();
+    private final ExamImpl examService = new ExamImpl();
 
     public void start() {
         System.out.println("Administration");
@@ -24,7 +33,7 @@ public class UniversityAdministration {
                     System.out.println("smth");
                     break;
                 case 2:
-                    System.out.println("smta");
+                    showExamRecordsService();
                     break;
                 case 3:
                     System.out.println("smthwq");
@@ -44,6 +53,27 @@ public class UniversityAdministration {
                 default:
                     System.out.println("Wrong choice. Please try again");
             }
+        }
+    }
+
+    private void showExamRecordsService() {
+        System.out.println("Choice option:\n" +
+                "1. Show all records\n" +
+                "2. Show by faculty\n" +
+                "3. Show in descending order by grade, group by faculties");
+        switch (scan.nextInt()) {
+            case 1:
+                List<ExaminationList> recordsList = recordService.getAll();
+                for (ExaminationList el: recordsList) {
+                    System.out.println(el.toString());
+                }
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            default:
+                System.out.println("Wrong choice");
         }
     }
 }

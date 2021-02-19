@@ -28,6 +28,7 @@ public class MainMenu {
                     System.out.println("test-area");
                     ApplicantImpl appService = new ApplicantImpl();
                     System.out.println(appService.getTotalMark(10003));
+                    System.out.println (appService.enrollAllApplicants ());
                     System.out.println();
                     break;
                 case 4:

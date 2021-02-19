@@ -19,8 +19,6 @@ public class NewApplicant {
     private final FacultyImpl facultyService = new FacultyImpl();
     private final Applicant applicant = new Applicant();
 
-
-
     public void start() throws InterruptedException {
 
         System.out.println("Welcome to our university!");
@@ -46,6 +44,7 @@ public class NewApplicant {
         Thread.sleep(100);
     }
 
+
     /**
      * Enter exam grades for chosen faculty
      * Directly to applicant object
@@ -53,7 +52,7 @@ public class NewApplicant {
     private void enterExamGrades() {
         ExaminationList record;
         System.out.println("\nNow you need to enter the grades for the exams :");
-        List<Integer> exams = examService.getByFaculty(applicant.getFacultyId());
+        List<Integer> exams = examService.getIdListByFacultyId(applicant.getFacultyId());
         for (Integer el : exams) {
             record = new ExaminationList();
             System.out.println("Enter mark for " + examService.getNameById(el));
