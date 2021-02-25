@@ -6,7 +6,6 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FacultyImplTest {
@@ -23,7 +22,7 @@ public class FacultyImplTest {
         impl.create(fac);
         List<Faculty> fac_list = impl.getAll();
 //        Assert.assertTrue(fac_list.contains(fac));
-        Assert.assertEquals(11, fac.getFacultyId(), "Dobavilos");
+        Assert.assertEquals(11, fac.getFacultyId(), "Faculty record was added correctly");
     }
 
     @AfterTest
