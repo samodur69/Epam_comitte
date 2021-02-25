@@ -24,7 +24,7 @@ public class ApplicantImpl implements ApplicantDao {
 
         Connection conn = null;
         PreparedStatement ps = null;
-        int rows;
+        ResultSet rs;
         try {
             conn = DBConnection.getConnection();
             if (conn != null) {
@@ -36,8 +36,13 @@ public class ApplicantImpl implements ApplicantDao {
                 ps.setString(5, applicant.getPassword());
                 ps.setString(6, applicant.getEmail());
                 ps.setString(7, applicant.getEnrolled());
-                rows = ps.executeUpdate();
-                return rows;
+                ps.executeUpdate();
+                int id = -1;
+                rs = ps.executeQuery("SELECT SQ_STUDENT_ID.CURRVAL FROM DUAL");
+                if (rs.next()) {
+                    id = (int) rs.getLong(1);
+                }
+                return id;
             }
         } catch (SQLException e) {
             logger.warn("Can`t add new applicant to DB");
@@ -58,7 +63,8 @@ public class ApplicantImpl implements ApplicantDao {
                 "FACULTY_ID = ?, " +
                 "ST_PASSWORD = ?, " +
                 "ST_EMAIL = ?, " +
-                "ENROLLED = ?";
+                "ENROLLED = ? " +
+                "WHERE ID = ?";
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -74,6 +80,7 @@ public class ApplicantImpl implements ApplicantDao {
                 ps.setString(5, applicant.getPassword());
                 ps.setString(6, applicant.getEmail());
                 ps.setString(7, applicant.getEnrolled());
+                ps.setInt(8, applicant.getId());
                 rows = ps.executeUpdate();
                 return rows;
             }
@@ -88,8 +95,8 @@ public class ApplicantImpl implements ApplicantDao {
 
     @Override
     public int delete(int id) {
-        String sqlDelete = "DELETE" +
-                "FROM APPLICANTS" +
+        String sqlDelete = "DELETE " +
+                "FROM APPLICANTS " +
                 "WHERE ID = ?";
         int rows;
         Connection conn = null;
