@@ -124,12 +124,19 @@ public class ExamImpl implements ExamDao {
                 "VALUES ?";
         Connection conn = null;
         PreparedStatement ps = null;
+        ResultSet rs = null;
         int rows = 0;
         try {
             conn = DBConnection.getConnection();
             ps = conn.prepareStatement(sqlCreate);
             ps.setString(1, exam.getExamName ());
             rows = ps.executeUpdate();
+            int id = -1;
+            rs = ps.executeQuery("SELECT SQ_EXAM_ID.CURRVAL FROM DUAL");
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            return id;
         } catch (SQLException | NullPointerException e) {
             logger.info("Can`t add new faculty to DB");
             e.printStackTrace();
