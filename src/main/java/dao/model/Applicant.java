@@ -2,6 +2,8 @@ package dao.model;
 
 import util.Utils;
 
+import java.util.Objects;
+
 public class Applicant {
     private int id;
     private String firstName;
@@ -25,6 +27,11 @@ public class Applicant {
         this.facultyId = facultyId;
         this.enrolled = "N";
         this.password = Utils.generatePin();
+    }
+
+    public Applicant(String firstName, String lastName, String email, int schoolAverage, int facultyId) {
+        this(firstName, lastName, schoolAverage, facultyId);
+        this.email = email;
     }
 
 
@@ -90,6 +97,25 @@ public class Applicant {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Applicant applicant = (Applicant) o;
+        return id == applicant.id && schoolAverage == applicant.schoolAverage &&
+                facultyId == applicant.facultyId &&
+                Objects.equals(firstName , applicant.firstName) &&
+                Objects.equals(lastName , applicant.lastName) &&
+                Objects.equals(password , applicant.password) &&
+                Objects.equals(enrolled , applicant.enrolled) &&
+                Objects.equals(email , applicant.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id , firstName , lastName , schoolAverage , facultyId , password , enrolled , email);
     }
 
     @Override
