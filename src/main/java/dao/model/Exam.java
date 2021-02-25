@@ -9,6 +9,10 @@ public class Exam {
     public Exam() {
     }
 
+    public Exam (String examName) {
+        this.examName = examName;
+    }
+
     public int getExamId() {
         return examId;
     }
