@@ -4,6 +4,7 @@ import dao.model.Faculty;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -30,7 +31,9 @@ public class FacultyImplTest {
     public void setUp() throws SQLException {
         facultyImplUnderTest = new FacultyImpl();
         conn = DBConnection.getConnection();
-        st = conn.createStatement();
+        if (conn != null) {
+            st = conn.createStatement();
+        }
     }
 
     @BeforeMethod
@@ -93,7 +96,7 @@ public class FacultyImplTest {
             rowsAfter = rs.getInt(1);
         }
         assertEquals(result , 1);
-        assertTrue(rowsAfter + 1 == rowsBefore);
+        assertEquals(rowsAfter + 1, rowsBefore);
     }
 
     @Test
@@ -119,5 +122,20 @@ public class FacultyImplTest {
         }
         final String result = facultyImplUnderTest.getNameById(idToGet);
         assertEquals(result , expected);
+    }
+
+    @AfterClass
+    public void finish() {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                logger.warn("Error when close testNG connection");
+                e.printStackTrace();
+            } finally {
+                conn = null;
+            }
+
+        }
     }
 }
