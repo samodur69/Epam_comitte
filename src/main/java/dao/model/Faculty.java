@@ -56,8 +56,4 @@ public class Faculty {
                 ", minGrade=" + minGrade +
                 '}';
     }
-
-    public String idAndName() {
-        return facultyId + " " + facultyName;
-    }
 }
