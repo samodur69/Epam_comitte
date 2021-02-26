@@ -69,7 +69,7 @@ public class ExamImplTest extends BaseTest{
     public void testUpdate() {
         List<Exam> examList = examImplUnderTest.getAll();
         Exam examUpdate = new Exam();
-        if (examList.size() > 1) {
+        if (examList.size() > 0) {
             examUpdate = examList.get(0);
         }
         examUpdate.setExamName("UpdateTest");
