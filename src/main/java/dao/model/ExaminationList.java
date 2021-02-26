@@ -1,5 +1,7 @@
 package dao.model;
 
+import java.util.Objects;
+
 public class ExaminationList {
     private int recordId;
     private int studentId;
@@ -45,6 +47,22 @@ public class ExaminationList {
 
     public void setRecordId(int recordId) {
         this.recordId = recordId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExaminationList that = (ExaminationList) o;
+        return recordId == that.recordId &&
+                studentId == that.studentId &&
+                examId == that.examId &&
+                grade == that.grade;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(recordId , studentId , examId , grade);
     }
 
     @Override
