@@ -108,7 +108,7 @@ public class FacultyImpl implements FacultyDao {
     public int delete(int id) {
         String sqlDelete = "DELETE " +
                 "FROM FACULTY_LIST " +
-                "WHERE ID = ?";
+                "WHERE FACULTY_ID = ?";
         int rows;
         Connection conn = null;
         PreparedStatement ps = null;
@@ -130,7 +130,7 @@ public class FacultyImpl implements FacultyDao {
     @Override
     public Faculty getById(int id) {
         Faculty faculty;
-        String sqlGetById = "SELECT * FROM FACULTY_LIST WHERE ID = ?";
+        String sqlGetById = "SELECT * FROM FACULTY_LIST WHERE FACULTY_ID = ?";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -158,7 +158,7 @@ public class FacultyImpl implements FacultyDao {
 
     @Override
     public String getNameById(int id) {
-        String sqlGetName = "SELECT FACULTY_NAME FROM FACULTY_LIST WHERE ID = ?";
+        String sqlGetName = "SELECT FACULTY_NAME FROM FACULTY_LIST WHERE FACULTY_ID = ?";
         String facultyName = "";
         Connection conn;
         PreparedStatement ps;
