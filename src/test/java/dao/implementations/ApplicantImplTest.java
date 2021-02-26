@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.testng.Assert.*;
 
-public class ApplicantImplTest {
+public class ApplicantImplTest extends BaseTest{
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicantImplTest.class);
     private Applicant applicant;
@@ -35,7 +35,8 @@ public class ApplicantImplTest {
         // applicant obj used for email tests
         aplEmailTest = new Applicant("Jhon", "Dou", emailGet,55, 20);
         conn = DBConnection.getConnection();
-        st = conn.createStatement();
+        System.out.println("tets test");
+        st = conn != null ? conn.createStatement() : null;
     }
 
     @AfterClass
@@ -77,7 +78,6 @@ public class ApplicantImplTest {
         final int result = applServiceUnderTest.delete(applicant.getId());
         assertEquals(result , 1, "Rows deleted: ");
     }
-
 
     @Test
     public void testGetAll() throws SQLException{
