@@ -18,29 +18,36 @@ public class ExaminationListImpl implements ExaminationListDao {
     public int create(ExaminationList record) {
         String sqlCreateRecord = "INSERT INTO EXAMINATION_RECORDS " +
                 "(STUDENT_ID, EXAM_ID, GRADE) VALUES (?, ?, ?)";
-
         Connection conn = null;
         PreparedStatement ps = null;
-        int rows = 0;
+        ResultSet rs;
         try {
             conn = DBConnection.getConnection();
             ps = conn.prepareStatement(sqlCreateRecord);
             ps.setInt(1, record.getStudentId());
             ps.setInt(2, record.getExamId());
             ps.setInt(3, record.getGrade());
-            rows = ps.executeUpdate();
+            ps.executeUpdate();
+            rs = ps.executeQuery("SELECT SQ_EXAM_RECORD_ID.CURRVAL FROM DUAL");
+            int id = -1;
+            if (rs.next()) {
+                id = (int) rs.getLong(1);
+            }
+            return id;
         } catch (SQLException e) {
             logger.info("Can`t add new exam record to DB");
             e.printStackTrace();
         } finally {
             DBConnection.close(ps, conn);
         }
-        return rows;
+        return -1;
     }
 
     @Override
     public List<ExaminationList> getAll() {
-        String sqlGetAll = "SELECT * FROM EXAMINATION_RECORDS";
+        String sqlGetAll = "SELECT * " +
+                "FROM " +
+                "EXAMINATION_RECORDS";
         List<ExaminationList> recordList = new ArrayList<>();
         ExaminationList record;
         Connection conn = null;
@@ -104,12 +111,13 @@ public class ExaminationListImpl implements ExaminationListDao {
 
     @Override
     public int update(ExaminationList record) {
-        String sqlUpdate = "UPDATE" +
-                "EXAMINATION_RECORDS" +
-                "SET" +
+        String sqlUpdate = "UPDATE " +
+                "EXAMINATION_RECORDS " +
+                "SET " +
                 "STUDENT_ID = ?, " +
                 "EXAM_ID = ?, " +
-                "GRADE = ?";
+                "GRADE = ?" +
+                "WHERE EXAM_RECORD_ID = ?";
         Connection conn = null;
         PreparedStatement ps = null;
         int rows;
@@ -119,6 +127,7 @@ public class ExaminationListImpl implements ExaminationListDao {
             ps.setInt(1, record.getStudentId());
             ps.setInt(2, record.getExamId());
             ps.setInt (3, record.getGrade());
+            ps.setInt (4, record.getRecordId());
             rows = ps.executeUpdate();
             return rows;
         } catch (SQLException e) {
