@@ -1,5 +1,7 @@
 package dao.model;
 
+import java.util.Objects;
+
 public class Faculty {
     private int facultyId;
     private String facultyName;
@@ -55,5 +57,18 @@ public class Faculty {
                 ", facultyCapacity=" + facultyCapacity +
                 ", minGrade=" + minGrade +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Faculty faculty = (Faculty) o;
+        return facultyId == faculty.facultyId && facultyCapacity == faculty.facultyCapacity && minGrade == faculty.minGrade && facultyName.equals(faculty.facultyName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(facultyId , facultyName , facultyCapacity , minGrade);
     }
 }
