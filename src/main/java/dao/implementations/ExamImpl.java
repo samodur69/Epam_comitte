@@ -1,8 +1,8 @@
 package dao.implementations;
 
 import dao.interfaces.ExamDao;
-import data.DBConnection;
 import dao.model.Exam;
+import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class ExamImpl implements ExamDao {
     @Override
     public Exam getById(int id) {
         Exam exam;
-        String sqlGetById = "SELECT * FROM EXAMS_LIST WHERE ID = ?";
+        String sqlGetById = "SELECT * FROM EXAMS_LIST WHERE EXAM_ID = ?";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -70,19 +70,19 @@ public class ExamImpl implements ExamDao {
 
     @Override
     public int update(Exam exam) {
-        String sqlUpdate = "UPDATE" +
-                "EXAMS_LIST" +
-                "SET" +
-                "EXAM_ID = ?, " +
-                "EXAM_NAME = ?, ";
+        String sqlUpdate = "UPDATE " +
+                "EXAMS_LIST " +
+                "SET " +
+                "EXAM_NAME = ? " +
+                "WHERE EXAM_ID = ?";
         Connection conn = null;
         PreparedStatement ps = null;
         int rows;
         try {
             conn = DBConnection.getConnection ();
             ps = conn.prepareStatement (sqlUpdate);
-            ps.setInt (1, exam.getExamId ());
-            ps.setString (2, exam.getExamName ());
+            ps.setString (1, exam.getExamName ());
+            ps.setInt (2, exam.getExamId ());
             rows = ps.executeUpdate();
             return rows;
         } catch (SQLException e) {
@@ -96,9 +96,9 @@ public class ExamImpl implements ExamDao {
 
     @Override
     public int delete(int id) {
-        String sqlDelete = "DELETE" +
-                "FROM EXAMS_LIST" +
-                "WHERE ID = ?";
+        String sqlDelete = "DELETE " +
+                "FROM EXAMS_LIST " +
+                "WHERE EXAM_ID = ?";
         int rows;
         Connection conn = null;
         PreparedStatement ps = null;
@@ -119,19 +119,18 @@ public class ExamImpl implements ExamDao {
 
     @Override
     public int create(Exam exam) {
-        String sqlCreate = "INSERT INTO EXAM_LIST " +
-                "EXAM_NAME " +
-                "VALUES ?";
+        String sqlCreate = "INSERT INTO EXAMS_LIST " +
+                "(EXAM_NAME) " +
+                "VALUES (?)";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        int rows = 0;
+        int id = -1;
         try {
             conn = DBConnection.getConnection();
             ps = conn.prepareStatement(sqlCreate);
             ps.setString(1, exam.getExamName ());
-            rows = ps.executeUpdate();
-            int id = -1;
+            ps.executeUpdate();
             rs = ps.executeQuery("SELECT SQ_EXAM_ID.CURRVAL FROM DUAL");
             if (rs.next()) {
                 id = rs.getInt(1);
@@ -143,7 +142,7 @@ public class ExamImpl implements ExamDao {
         } finally {
             DBConnection.close(ps, conn);
         }
-        return rows;
+        return id;
     }
 
     // TODO move to ExamForFacultyDAO
