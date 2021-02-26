@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="/Users/apple/_Projects/Epam_comitte/src/test">
+        <classes>
+            <class name="dao.implementations.ApplicantImplTest">
+<!--                <methods>-->
+<!--                    <include name="testCreate"/>-->
+<!--                    <include name="testGetAll"/>-->
+<!--                    <include name="testGetById"/>-->
+<!--                    <include name="testGetByEmail"/>-->
+<!--                    <include name="testGetByEnrolled"/>-->
+<!--                </methods>-->
+            </class>
+            <class name="dao.implementations.ExamImplTest">
+                <methods>
+                    <include name="testCreate"/>
+                    <include name="testGetAll"/>
+                    <include name="testUpdate"/>
+                </methods>
+            </class>
+            <class name="dao.implementations.FacultyImplTest">
+                <methods>
+                    <include name="testGetById"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
