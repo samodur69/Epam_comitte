@@ -23,21 +23,26 @@ public class FacultyImpl implements FacultyDao {
 
         Connection conn = null;
         PreparedStatement ps = null;
-        int rows = 0;
+        ResultSet rs;
+        int id = -1;
         try {
             conn = DBConnection.getConnection();
             ps = conn.prepareStatement(sqlCreate);
             ps.setString(1, faculty.getFacultyName());
             ps.setInt(2, faculty.getFacultyCapacity());
             ps.setInt(3, faculty.getMinGrade());
-            rows = ps.executeUpdate();
+            ps.executeUpdate();
+            rs = ps.executeQuery("SELECT SQ_FACULTY_ID.CURRVAL FROM DUAL");
+            if (rs.next()) {
+                id = (int) rs.getLong(1);
+            }
         } catch (SQLException | NullPointerException e) {
             logger.info("Can`t add new faculty to DB");
             e.printStackTrace();
         } finally {
             DBConnection.close(ps, conn);
         }
-        return rows;
+        return id;
     }
 
     @Override
@@ -71,23 +76,23 @@ public class FacultyImpl implements FacultyDao {
 
     @Override
     public int update(Faculty faculty) {
-        String sqlUpdate = "UPDATE" +
-                "FACULTY_LIST" +
-                "SET" +
-                "FACULTY_ID = ?, " +
+        String sqlUpdate = "UPDATE " +
+                "FACULTY_LIST " +
+                "SET " +
                 "FACULTY_NAME = ?, " +
                 "FACULTY_CAPACITY = ?, " +
-                "FACULTY_MIN_GRADE = ?";
+                "FACULTY_MIN_GRADE = ?" +
+                "WHERE FACULTY_ID = ?";
         Connection conn = null;
         PreparedStatement ps = null;
         int rows;
         try {
             conn = DBConnection.getConnection ();
             ps = conn.prepareStatement (sqlUpdate);
-            ps.setInt (1, faculty.getFacultyId ());
-            ps.setString (2, faculty.getFacultyName ());
-            ps.setInt (3, faculty.getFacultyCapacity ());
-            ps.setInt (4, faculty.getMinGrade ());
+            ps.setString (1, faculty.getFacultyName ());
+            ps.setInt (2, faculty.getFacultyCapacity ());
+            ps.setInt (3, faculty.getMinGrade ());
+            ps.setInt (4, faculty.getFacultyId ());
             rows = ps.executeUpdate();
             return rows;
         } catch (SQLException e) {
@@ -101,8 +106,8 @@ public class FacultyImpl implements FacultyDao {
 
     @Override
     public int delete(int id) {
-        String sqlDelete = "DELETE" +
-                "FROM FACULTY_LIST" +
+        String sqlDelete = "DELETE " +
+                "FROM FACULTY_LIST " +
                 "WHERE ID = ?";
         int rows;
         Connection conn = null;
