@@ -64,7 +64,10 @@ public class Faculty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Faculty faculty = (Faculty) o;
-        return facultyId == faculty.facultyId && facultyCapacity == faculty.facultyCapacity && minGrade == faculty.minGrade && facultyName.equals(faculty.facultyName);
+        return facultyId == faculty.facultyId &&
+                facultyCapacity == faculty.facultyCapacity &&
+                minGrade == faculty.minGrade &&
+                facultyName.equals(faculty.facultyName);
     }
 
     @Override
