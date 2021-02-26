@@ -1,10 +1,11 @@
 package util;
 
 import dao.implementations.ApplicantImpl;
+import dao.implementations.ExamImpl;
 import dao.implementations.ExaminationListImpl;
-import dao.implementations.FacultyImpl;
+import dao.model.Applicant;
+import dao.model.Exam;
 import dao.model.ExaminationList;
-import dao.model.Faculty;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -23,20 +24,22 @@ public class Utils {
 
     public static void createExamRecords() {
         ExaminationListImpl ex = new ExaminationListImpl();
-        FacultyImpl fac = new FacultyImpl();
         ApplicantImpl appService = new ApplicantImpl ();
-        List<Faculty> facultyList;
-        List<Integer> list_id = new ArrayList<>();
-        facultyList = fac.getAll();
-        for (Faculty el: facultyList) {
-            list_id.add(el.getFacultyId());
-        }
+        ExamImpl exam = new ExamImpl();
         SecureRandom r = new SecureRandom();
-        for (int i = 0; i < appService.getAll().size (); i++) {
+
+        List<Integer> list_id = new ArrayList<>();
+        List<Exam> examList = exam.getAll();
+        List<Applicant> applicantList = appService.getAll();
+
+        for (Exam el: examList) {
+            list_id.add(el.getExamId());
+        }
+        for (Applicant aplct: applicantList) {
             List<Integer> copy = new ArrayList<>(list_id);
-            for (int j = 0; j < 3; j++) {
+            for (int i = 0; i < 3; i++) {
                 int randomIndex = r.nextInt(copy.size());
-                ex.create(new ExaminationList(i, copy.get(randomIndex), r.nextInt(101)));
+                ex.create(new ExaminationList(aplct.getId(), copy.get(randomIndex) , r.nextInt(101)));
                 copy.remove(randomIndex);
             }
         }
