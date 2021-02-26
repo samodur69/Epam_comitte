@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -77,34 +78,46 @@ public class FacultyImplTest {
     }
 
     @Test
-    public void testDelete() {
-        // Setup
-
-        // Run the test
-        final int result = facultyImplUnderTest.delete(0);
-
-        // Verify the results
-        assertEquals(0 , result);
+    public void testDelete() throws SQLException {
+        ResultSet rs = st.executeQuery("SELECT COUNT(FACULTY_ID), MAX(FACULTY_ID) FROM FACULTY_LIST");
+        int rowsBefore = 0;
+        int idToDelete = 0;
+        if (rs.next()) {
+            rowsBefore = rs.getInt("COUNT(FACULTY_ID)");
+            idToDelete = rs.getInt("MAX(FACULTY_ID)");
+        }
+        final int result = facultyImplUnderTest.delete(idToDelete);
+        int rowsAfter = 0;
+        rs = st.executeQuery("SELECT COUNT(FACULTY_ID) FROM FACULTY_LIST");
+        if (rs.next()) {
+            rowsAfter = rs.getInt(1);
+        }
+        assertEquals(result , 1);
+        assertTrue(rowsAfter + 1 == rowsBefore);
     }
 
     @Test
     public void testGetById() {
-        // Setup
-
-        // Run the test
-        final Faculty result = facultyImplUnderTest.getById(0);
-
-        // Verify the results
+        SoftAssert softAssert = new SoftAssert();
+        facultyList = facultyImplUnderTest.getAll();
+        for (Faculty el: facultyList) {
+            int id = el.getFacultyId();
+            Faculty result = facultyImplUnderTest.getById(id);
+            softAssert.assertEquals(el, result, "Object from ObjectsList equals Object from DB ");
+        }
+        softAssert.assertAll();
     }
 
     @Test
     public void testGetNameById() {
-        // Setup
-
-        // Run the test
-        final String result = facultyImplUnderTest.getNameById(0);
-
-        // Verify the results
-        assertEquals("result" , result);
+        facultyList = facultyImplUnderTest.getAll();
+        int idToGet = 0;
+        String expected = "";
+        if (facultyList.size() > 0) {
+            idToGet = facultyList.get(0).getFacultyId();
+            expected = facultyList.get(0).getFacultyName();
+        }
+        final String result = facultyImplUnderTest.getNameById(idToGet);
+        assertEquals(result , expected);
     }
 }
