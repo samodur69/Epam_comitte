@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ExaminationListDao extends BaseDao<ExaminationList> {
 
-    List<ExaminationList> getByFaculty(int facultyId);
-
+    List<ExaminationList> getRecordsByStudent(int studentId);
+    double getAverageMarkByExam(int examId);
 }

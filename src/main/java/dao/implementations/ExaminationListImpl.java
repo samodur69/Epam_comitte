@@ -45,9 +45,7 @@ public class ExaminationListImpl implements ExaminationListDao {
 
     @Override
     public List<ExaminationList> getAll() {
-        String sqlGetAll = "SELECT * " +
-                "FROM " +
-                "EXAMINATION_RECORDS";
+        String sqlGetAll = "SELECT * FROM EXAMINATION_RECORDS";
         List<ExaminationList> recordList = new ArrayList<>();
         ExaminationList record;
         Connection conn = null;
@@ -55,8 +53,8 @@ public class ExaminationListImpl implements ExaminationListDao {
         ResultSet rs = null;
         try {
             conn = DBConnection.getConnection();
-            st = conn.prepareStatement(sqlGetAll);
-            rs = st.getResultSet();
+            st = conn.createStatement();
+            rs = st.executeQuery(sqlGetAll);
             while (rs.next()) {
                 record = new ExaminationList();
                 record.setRecordId(rs.getInt("EXAM_RECORD_ID"));
@@ -74,9 +72,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         return recordList;
     }
 
-    @Override // TODO !!!!!!!!!!!!!!!!!!!
-    public List<ExaminationList> getByFaculty(int facultyId) {
-        String sqlGetAll = "SELECT * FROM EXAMINATION_RECORDS WHERE FACULTY_ID = ?";
+    @Override
+    public List<ExaminationList> getRecordsByStudent(int studentId) {
+        String sqlGetAll = "SELECT * FROM EXAMINATION_RECORDS WHERE STUDENT_ID = ?";
         List<ExaminationList> recordList = new ArrayList<>();
         ExaminationList record;
         Connection conn = null;
@@ -85,7 +83,7 @@ public class ExaminationListImpl implements ExaminationListDao {
         try {
             conn = DBConnection.getConnection();
             ps = conn.prepareStatement(sqlGetAll);
-            ps.setInt(1, facultyId);
+            ps.setInt(1, studentId);
             rs = ps.executeQuery();
             while (rs.next()) {
                 record = new ExaminationList();
@@ -106,6 +104,30 @@ public class ExaminationListImpl implements ExaminationListDao {
 
     @Override
     public ExaminationList getById(int id) {
+        ExaminationList record;
+        String sqlGetById = "SELECT * FROM EXAMINATION_RECORDS WHERE EXAM_RECORD_ID = ?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement (sqlGetById);
+            ps.setInt (1, id);
+            rs = ps.executeQuery ();
+            while (rs.next()) {
+                record = new ExaminationList();
+                record.setRecordId(rs.getInt("EXAM_RECORD_ID"));
+                record.setStudentId(rs.getInt("STUDENT_ID"));
+                record.setExamId(rs.getInt("EXAM_ID"));
+                record.setGrade(rs.getInt("GRADE"));
+                return record;
+            }
+        } catch (SQLException e) {
+            logger.warn("Troubles with getting exam record by his ID");
+            e.printStackTrace();
+        } finally {
+            DBConnection.close(rs, ps, conn);
+        }
         return null;
     }
 
@@ -141,9 +163,9 @@ public class ExaminationListImpl implements ExaminationListDao {
 
     @Override
     public int delete(int id) {
-        String sqlDelete = "DELETE" +
-                "FROM EXAMINATION_RECORDS" +
-                "WHERE ID = ?";
+        String sqlDelete = "DELETE " +
+                "FROM EXAMINATION_RECORDS " +
+                "WHERE EXAM_RECORD_ID = ?";
         int rows;
         Connection conn = null;
         PreparedStatement ps = null;
@@ -159,6 +181,11 @@ public class ExaminationListImpl implements ExaminationListDao {
         } finally {
             DBConnection.close (ps, conn);
         }
+        return 0;
+    }
+
+    @Override
+    public double getAverageMarkByExam(int examId) {
         return 0;
     }
 }
