@@ -1,10 +1,10 @@
 package ui;
 
-import dao.implementations.ApplicantImpl;
-import dao.implementations.ExamImpl;
 import dao.implementations.ExaminationListImpl;
 import dao.model.ExaminationList;
-import util.Utils;
+import service.ApplicantService;
+import service.ExaminationRecordsService;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,8 +12,7 @@ public class UniversityAdministration {
 
     private final static Scanner scan = new Scanner(System.in);
     private final ExaminationListImpl recordService = new ExaminationListImpl();
-    private final ExamImpl examService = new ExamImpl();
-    private final ApplicantImpl appService = new ApplicantImpl ();
+    private final ApplicantService applicantService = new ApplicantService();
 
     public void start() {
         System.out.println("Administration");
@@ -23,12 +22,12 @@ public class UniversityAdministration {
                     "2. Show examination records\n" +
                     "3. Show students by faculty\n" +
                     "4. Show best students (max sum of grades)\n" +
-                    "5. something else....\n" +
-                    "69. Go to previous menu\n" +
+                    "5. Create Random Exam Records for All Students\n" +
+                    "9. Go to previous menu\n" +
                     "0. Exit");
             switch (scan.nextInt()) {
                 case 1:
-                    System.out.println (appService.enrollAllApplicants() + " students enrolled");
+                    System.out.println (applicantService.enrollAllApplicants() + " students enrolled");
                     break;
                 case 2:
                     showExamRecordsService();
@@ -41,9 +40,9 @@ public class UniversityAdministration {
                     break;
                 case 5:
                     System.out.println("Random create records");
-                    Utils.createExamRecords();
+                    ExaminationRecordsService.createRandomExamRecordsForAll();
                     break;
-                case 69:
+                case 9:
                     inMenu = false;
                     break;
                 case 0:
