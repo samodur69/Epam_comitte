@@ -58,7 +58,7 @@ public class ApplicantImpl implements ApplicantDao {
     @Override
     public int update(Applicant applicant) {
         String sqlCreate = "UPDATE APPLICANTS " +
-                "SET" +
+                "SET " +
                 "FIRST_NAME = ?, " +
                 "LAST_NAME = ?, " +
                 "SCHOOL_AVG_SCORES = ?, " +
