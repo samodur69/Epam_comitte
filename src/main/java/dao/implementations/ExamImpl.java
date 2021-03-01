@@ -145,7 +145,6 @@ public class ExamImpl implements ExamDao {
         return id;
     }
 
-    // TODO move to ExamForFacultyDAO
     @Override
     public List<Integer> getIdListByFacultyId(int facultyId) {
         String sqlGetExams = "SELECT EXAM_ID FROM EXAMS_FACULTY WHERE FACULTY_ID = ?";
