@@ -16,7 +16,6 @@ public class UtilsTest {
         // Setup
 
         // Run the test
-        Utils.createExamRecords();
 
         // Verify the results
     }
