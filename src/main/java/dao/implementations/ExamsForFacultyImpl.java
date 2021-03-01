@@ -2,7 +2,6 @@ package dao.implementations;
 
 import dao.interfaces.ExamForFacultyDao;
 import dao.model.ExamForFaculty;
-import dao.model.ExaminationList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
