@@ -23,6 +23,7 @@ public class ExaminationListImpl implements ExaminationListDao {
         ResultSet rs;
         try {
             conn = DBConnection.getConnection();
+            assert conn != null;
             ps = conn.prepareStatement(sqlCreateRecord);
             ps.setInt(1, record.getStudentId());
             ps.setInt(2, record.getExamId());
@@ -53,6 +54,7 @@ public class ExaminationListImpl implements ExaminationListDao {
         ResultSet rs = null;
         try {
             conn = DBConnection.getConnection();
+            assert conn != null;
             st = conn.createStatement();
             rs = st.executeQuery(sqlGetAll);
             while (rs.next()) {
@@ -82,6 +84,7 @@ public class ExaminationListImpl implements ExaminationListDao {
         ResultSet rs = null;
         try {
             conn = DBConnection.getConnection();
+            assert conn != null;
             ps = conn.prepareStatement(sqlGetAll);
             ps.setInt(1, studentId);
             rs = ps.executeQuery();
@@ -111,10 +114,11 @@ public class ExaminationListImpl implements ExaminationListDao {
         ResultSet rs = null;
         try {
             conn = DBConnection.getConnection();
+            assert conn != null;
             ps = conn.prepareStatement (sqlGetById);
             ps.setInt (1, id);
             rs = ps.executeQuery ();
-            while (rs.next()) {
+            if (rs.next()) {
                 record = new ExaminationList();
                 record.setRecordId(rs.getInt("EXAM_RECORD_ID"));
                 record.setStudentId(rs.getInt("STUDENT_ID"));
@@ -145,6 +149,7 @@ public class ExaminationListImpl implements ExaminationListDao {
         int rows;
         try {
             conn = DBConnection.getConnection ();
+            assert conn != null;
             ps = conn.prepareStatement (sqlUpdate);
             ps.setInt(1, record.getStudentId());
             ps.setInt(2, record.getExamId());
@@ -171,6 +176,7 @@ public class ExaminationListImpl implements ExaminationListDao {
         PreparedStatement ps = null;
         try {
             conn = DBConnection.getConnection();
+            assert conn != null;
             ps = conn.prepareStatement (sqlDelete);
             ps.setInt (1 , id);
             rows = ps.executeUpdate();
@@ -193,6 +199,7 @@ public class ExaminationListImpl implements ExaminationListDao {
         ResultSet rs = null;
         try {
             conn = DBConnection.getConnection();
+            assert conn != null;
             ps = conn.prepareStatement(sql);
             ps.setInt(1, examId);
             rs = ps.executeQuery();
