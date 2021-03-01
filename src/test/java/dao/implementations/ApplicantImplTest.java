@@ -1,19 +1,17 @@
 package dao.implementations;
 
 import dao.model.Applicant;
+import dao.model.Faculty;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 import java.security.SecureRandom;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.sql.*;
+import java.util.Collections;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -21,66 +19,48 @@ import static org.testng.Assert.*;
 public class ApplicantImplTest extends BaseTest{
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicantImplTest.class);
-    private Applicant applicant;
-    private Applicant aplEmailTest;
     private ApplicantImpl applServiceUnderTest;
-    List<Applicant> apList;
-    private final String email = "test@testng.com";
-    private final String emailGet = "asdfg@poiu.ru";
     private Statement st;
     private Connection conn;
     private final SecureRandom r = new SecureRandom();
-    private final String[] names = {"Alex", "Michael", "Boris"};
-    private final String[] lastNames = {"First", "Ivanov", "Petrov", "Sidorov"};
+    private final String[] names = {"Alex", "Michael", "Boris", "John"};
+    private final String[] lastNames = {"First", "Ivanov", "Petrov", "Sidorov", "Dou"};
+    List<Applicant> apList;
+
 
     @BeforeClass
     public void setUp() throws SQLException {
         applServiceUnderTest = new ApplicantImpl();
-        // applicant obj used for create/delete tests
-        applicant = new Applicant("testName", "testName", email, 100, 10);
-        // applicant obj used for email tests
-        aplEmailTest = new Applicant("Jhon", "Dou", emailGet,55, 20);
         conn = DBConnection.getConnection();
-        System.out.println("tets test");
-        st = conn != null ? conn.createStatement() : null;
-        apList = new ArrayList<>();
-    }
-
-    @AfterClass
-    public void close() {
-        DBConnection.close(conn);
-        if (conn == null) {
-            logger.info("Connection closed");
+        if (conn != null) {
+            st = conn.createStatement();
         }
-
+        logger.info("Start testing Applicant DAO class");
     }
+
 
     @Test(description = "create new Applicant in DB")
-    public void testCreate() {
-        String firstName = "";
-        String lastName = "";
-        String email = "";
-        int schoolAverage = r.nextInt(101);
-
-
-
+    public void testCreate() throws SQLException {
+        String sql = "SELECT * FROM APPLICANTS WHERE ID = ?";
+        Applicant applicant = applicantGenerator();
         final int id = applServiceUnderTest.create(applicant);
         applicant.setId(id);
-        // id in DB start from 10000
-        assertTrue(id > 10000, "Wrong id ");
-        //  TODO assert to check row
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        assertTrue(rs.next(), "Applicant not created");
     }
 
     @Test
     public void testUpdate() {
-        apList = applServiceUnderTest.getAll();
         Applicant aplUpdate = new Applicant();
+        apList = applServiceUnderTest.getAll();
+        Collections.shuffle(apList);
         if (apList.size() > 0) {
             aplUpdate = apList.get(0);
         }
         aplUpdate.setFirstName("Test");
         aplUpdate.setLastName("Testovich");
-        aplUpdate.setEmail("test@testng.ru");
         final int result = applServiceUnderTest.update(aplUpdate);
         apList = applServiceUnderTest.getAll();
         boolean isUpdated = false;
@@ -94,13 +74,18 @@ public class ApplicantImplTest extends BaseTest{
         assertTrue(isUpdated, "In DB found Updated object ");
     }
 
-    @Test(description = "delete row from DB", dependsOnMethods = {"testCreate"})
-    public void testDelete() {
-        if (applicant.getId() == 0) {
-            applicant.setId(applServiceUnderTest.getIdByEmail(email));
+    @Test(description = "delete row from DB")
+    public void testDelete() throws SQLException {
+        // delete last row
+        ResultSet rs = st.executeQuery("SELECT MAX(ID) FROM APPLICANTS");
+        int idToDelete = 0;
+        if (rs.next()) {
+            idToDelete = rs.getInt(1);
         }
-        final int result = applServiceUnderTest.delete(applicant.getId());
-        assertEquals(result , 1, "Rows deleted: ");
+        applServiceUnderTest.delete(idToDelete);
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM APPLICANTS WHERE ID = ?");
+        ps.setInt(1, idToDelete);
+        assertFalse(rs.next(), "Expected row did`t deleted");
     }
 
     @Test
@@ -117,27 +102,30 @@ public class ApplicantImplTest extends BaseTest{
 
     @Test
     public void testGetById() {
-        Applicant applicant1 = new Applicant("Jhon", "Dou", "qw@qe.com",55, 30);
-        int expectedId = applServiceUnderTest.create(applicant1);
-        applicant1.setId(expectedId);
-        final Applicant result = applServiceUnderTest.getById(expectedId);
-        assertEquals(result, applicant1);
+        apList = applServiceUnderTest.getAll();
+        Collections.shuffle(apList);
+        int id = apList.get(0).getId();
+        Applicant applicant = applServiceUnderTest.getById(id);
+        assertEquals(applicant, apList.get(0), "Applicant from DB not equals expected");
     }
-
 
 
     @Test
     public void testGetByEmail() {
-        int id = applServiceUnderTest.create(aplEmailTest);
-        aplEmailTest.setId(id);
-        final Applicant result = applServiceUnderTest.getByEmail(emailGet);
-        assertEquals(result, aplEmailTest , "Diff when get by Email: ");
+        Applicant expected = applicantGenerator();
+        int id = applServiceUnderTest.create(expected);
+        expected.setId(id);
+        final Applicant result = applServiceUnderTest.getByEmail(expected.getEmail());
+        assertEquals(result, expected , "Diff when get by Email: ");
     }
 
-    @Test(dependsOnMethods = {"testGetByEmail"})
+    @Test
     public void testGetIdByEmail() {
-        final int result = applServiceUnderTest.getIdByEmail(emailGet);
-        assertEquals(result, aplEmailTest.getId(), "Wrong Id returned");
+        Applicant expected = applicantGenerator();
+        int expectedId = applServiceUnderTest.create(expected);
+        String emailToCheck = expected.getEmail();
+        final int result = applServiceUnderTest.getIdByEmail(emailToCheck);
+        assertEquals(result, expectedId, "Wrong Id returned");
     }
 
     @Test
@@ -151,10 +139,39 @@ public class ApplicantImplTest extends BaseTest{
         assertEquals(result.size(), count, "Wrong count enrolled students");
     }
 
-    @Test(dependsOnMethods = {"testGetByEmail"})
-    public void testCheckEmailUnique() {
-        // TODO sample emails list
-        final boolean result = applServiceUnderTest.checkEmailUnique(emailGet);
-        assertFalse(result);
+    @Test
+    public void testCheckEmailUnique() throws SQLException {
+        SoftAssert softAssert = new SoftAssert();
+        ResultSet rs = st.executeQuery("SELECT " +
+                "ST_EMAIL " +
+                "FROM " +
+                "(SELECT ST_EMAIL FROM APPLICANTS ORDER BY dbms_random.value) " +
+                "WHERE ROWNUM = 1");
+        String correctEmail = rs.getString("ST_EMAIL");
+        String randomEmail = "notexist@email.com";
+        final boolean resultNotUnique = applServiceUnderTest.checkEmailUnique(correctEmail);
+        final boolean resultUnique = applServiceUnderTest.checkEmailUnique(randomEmail);
+        softAssert.assertTrue(resultUnique, "not-existing email must be unique");
+        softAssert.assertFalse(resultNotUnique, "Existing address cannot be unique");
+        softAssert.assertAll();
+    }
+
+    public Applicant applicantGenerator() {
+        int index = r.nextInt(names.length);
+        String firstName = names[index];
+        index = r.nextInt(lastNames.length);
+        String lastName = lastNames[index];
+        int schoolAverage = r.nextInt(101);
+
+        FacultyImpl facultyS = new FacultyImpl();
+        List<Faculty> facultyList = facultyS.getAll();
+        Collections.shuffle(facultyList);
+        int facultyId = facultyList.get(0).getFacultyId();
+
+        String email = firstName +
+                r.nextInt(10) +
+                "@testng.com";
+
+        return new Applicant(firstName, lastName, email , schoolAverage, facultyId);
     }
 }
