@@ -5,10 +5,12 @@ import dao.model.Exam;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.AppException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ExamImpl implements ExamDao {
     private static final Logger logger = LoggerFactory.getLogger(ExamImpl.class);
@@ -22,7 +24,9 @@ public class ExamImpl implements ExamDao {
         Statement st;
         ResultSet rs;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             st = conn.createStatement();
             st.execute(sqlGetAll);
             rs = st.getResultSet();
@@ -49,11 +53,13 @@ public class ExamImpl implements ExamDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlGetById);
             ps.setInt (1, id);
             rs = ps.executeQuery ();
-            while (rs.next()) {
+            if (rs.next()) {
                 exam = new Exam();
                 exam.setExamId(rs.getInt("EXAM_ID"));
                 exam.setExamName(rs.getString("EXAM_NAME"));
@@ -79,7 +85,9 @@ public class ExamImpl implements ExamDao {
         PreparedStatement ps = null;
         int rows;
         try {
-            conn = DBConnection.getConnection ();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlUpdate);
             ps.setString (1, exam.getExamName ());
             ps.setInt (2, exam.getExamId ());
@@ -103,7 +111,9 @@ public class ExamImpl implements ExamDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlDelete);
             ps.setInt (1 , id);
             rows = ps.executeUpdate();
@@ -127,7 +137,9 @@ public class ExamImpl implements ExamDao {
         ResultSet rs = null;
         int id = -1;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlCreate);
             ps.setString(1, exam.getExamName ());
             ps.executeUpdate();
@@ -140,7 +152,7 @@ public class ExamImpl implements ExamDao {
             logger.info("Can`t add new faculty to DB");
             e.printStackTrace();
         } finally {
-            DBConnection.close(ps, conn);
+            DBConnection.close(rs, ps, conn);
         }
         return id;
     }
@@ -153,7 +165,9 @@ public class ExamImpl implements ExamDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlGetExams);
             ps.setInt(1, facultyId);
             rs = ps.executeQuery();
@@ -178,7 +192,9 @@ public class ExamImpl implements ExamDao {
         ResultSet rs = null;
         String examName = "";
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlGetId);
             ps.setInt(1, id);
             rs = ps.executeQuery();
