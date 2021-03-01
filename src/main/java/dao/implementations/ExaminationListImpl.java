@@ -186,6 +186,24 @@ public class ExaminationListImpl implements ExaminationListDao {
 
     @Override
     public double getAverageMarkByExam(int examId) {
-        return 0;
+        String sql = "SELECT AVG(grade) FROM EXAMINATION_RECORDS WHERE EXAM_ID = ?";
+        double avgMark = 0;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, examId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                avgMark = rs.getDouble(1);
+            }
+        } catch (SQLException e) {
+            logger.warn("Error when ask for average mark by exam");
+        } finally {
+            DBConnection.close(rs, ps, conn);
+        }
+        return avgMark;
     }
 }
