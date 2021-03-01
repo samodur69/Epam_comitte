@@ -6,9 +6,9 @@ import ui.MainMenu;
 import java.sql.Connection;
 
 public class App {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
+        Logger logger = LoggerFactory.getLogger(App.class);
         Connection connection = DBConnection.getConnection();
         try {
             MainMenu.start();
