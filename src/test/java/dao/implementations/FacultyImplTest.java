@@ -106,7 +106,7 @@ public class FacultyImplTest {
         for (Faculty el: facultyList) {
             int id = el.getFacultyId();
             Faculty result = facultyImplUnderTest.getById(id);
-            softAssert.assertEquals(el, result, "Object from ObjectsList equals Object from DB ");
+            softAssert.assertEquals(result, el, "Object from ObjectsList equals Object from DB ");
         }
         softAssert.assertAll();
     }
