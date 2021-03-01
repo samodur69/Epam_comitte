@@ -5,10 +5,12 @@ import dao.model.Applicant;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.AppException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ApplicantImpl implements ApplicantDao {
 
@@ -26,24 +28,24 @@ public class ApplicantImpl implements ApplicantDao {
         PreparedStatement ps = null;
         ResultSet rs;
         try {
-            conn = DBConnection.getConnection();
-            if (conn != null) {
-                ps = conn.prepareStatement(sqlCreate);
-                ps.setString(1, applicant.getFirstName());
-                ps.setString(2, applicant.getLastName());
-                ps.setInt(3, applicant.getSchoolAverage());
-                ps.setInt(4, applicant.getFacultyId());
-                ps.setString(5, applicant.getPassword());
-                ps.setString(6, applicant.getEmail());
-                ps.setString(7, applicant.getEnrolled());
-                ps.executeUpdate();
-                int id = -1;
-                rs = ps.executeQuery("SELECT SQ_STUDENT_ID.CURRVAL FROM DUAL");
-                if (rs.next()) {
-                    id = (int) rs.getLong(1);
-                }
-                return id;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
+            ps = conn.prepareStatement(sqlCreate);
+            ps.setString(1 , applicant.getFirstName());
+            ps.setString(2 , applicant.getLastName());
+            ps.setInt(3 , applicant.getSchoolAverage());
+            ps.setInt(4 , applicant.getFacultyId());
+            ps.setString(5 , applicant.getPassword());
+            ps.setString(6 , applicant.getEmail());
+            ps.setString(7 , applicant.getEnrolled());
+            ps.executeUpdate();
+            int id = -1;
+            rs = ps.executeQuery("SELECT SQ_STUDENT_ID.CURRVAL FROM DUAL");
+            if (rs.next()) {
+                id = (int) rs.getLong(1);
             }
+            return id;
         } catch (SQLException e) {
             logger.warn("Can`t add new applicant to DB");
             e.printStackTrace();
@@ -70,20 +72,20 @@ public class ApplicantImpl implements ApplicantDao {
         PreparedStatement ps = null;
         int rows;
         try {
-            conn = DBConnection.getConnection();
-            if (conn != null) {
-                ps = conn.prepareStatement(sqlCreate);
-                ps.setString(1, applicant.getFirstName());
-                ps.setString(2, applicant.getLastName());
-                ps.setInt(3, applicant.getSchoolAverage());
-                ps.setInt(4, applicant.getFacultyId());
-                ps.setString(5, applicant.getPassword());
-                ps.setString(6, applicant.getEmail());
-                ps.setString(7, applicant.getEnrolled());
-                ps.setInt(8, applicant.getId());
-                rows = ps.executeUpdate();
-                return rows;
-            }
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
+            ps = conn.prepareStatement(sqlCreate);
+            ps.setString(1 , applicant.getFirstName());
+            ps.setString(2 , applicant.getLastName());
+            ps.setInt(3 , applicant.getSchoolAverage());
+            ps.setInt(4 , applicant.getFacultyId());
+            ps.setString(5 , applicant.getPassword());
+            ps.setString(6 , applicant.getEmail());
+            ps.setString(7 , applicant.getEnrolled());
+            ps.setInt(8 , applicant.getId());
+            rows = ps.executeUpdate();
+            return rows;
         } catch (SQLException e) {
             logger.warn("Can`t add new applicant to DB");
             e.printStackTrace();
@@ -102,7 +104,9 @@ public class ApplicantImpl implements ApplicantDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlDelete);
             ps.setInt (1 , id);
             rows = ps.executeUpdate();
@@ -124,11 +128,13 @@ public class ApplicantImpl implements ApplicantDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlGetById);
             ps.setInt (1, id);
             rs = ps.executeQuery ();
-            while (rs.next()) {
+            if (rs.next()) {
                 applicant = new Applicant();
                 applicant.setId(rs.getInt("ID"));
                 applicant.setFirstName(rs.getString("FIRST_NAME"));
@@ -158,7 +164,9 @@ public class ApplicantImpl implements ApplicantDao {
         Statement st = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             st = conn.createStatement();
             st.execute(sqlGetAll);
             rs = st.getResultSet();
@@ -191,12 +199,14 @@ public class ApplicantImpl implements ApplicantDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlGetByEmail);
             ps.setString(1, email);
             rs = ps.executeQuery();
             applicant = new Applicant();
-            while (rs.next()) {
+            if (rs.next()) {
                 applicant.setId(rs.getInt("ID"));
                 applicant.setFirstName(rs.getString("FIRST_NAME"));
                 applicant.setLastName(rs.getString("LAST_NAME"));
@@ -205,8 +215,8 @@ public class ApplicantImpl implements ApplicantDao {
                 applicant.setEnrolled(rs.getString("ENROLLED"));
                 applicant.setPassword(rs.getString("ST_PASSWORD"));
                 applicant.setEmail(rs.getString("ST_EMAIL"));
+                return applicant;
             }
-            return applicant;
         } catch (SQLException e) {
             logger.warn("Troubles with getting Applicant by his ID");
             e.printStackTrace();
@@ -224,7 +234,9 @@ public class ApplicantImpl implements ApplicantDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlGetByEmail);
             ps.setString(1, email);
             rs = ps.executeQuery();
@@ -250,7 +262,9 @@ public class ApplicantImpl implements ApplicantDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlGetByEmail);
             ps.setString(1, email);
             rs = ps.executeQuery();
@@ -276,7 +290,9 @@ public class ApplicantImpl implements ApplicantDao {
         Statement st = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             st = conn.createStatement();
             st.execute(sqlGetAll);
             rs = st.getResultSet();
