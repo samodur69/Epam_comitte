@@ -6,14 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
+import util.AppException;
 
 import java.sql.*;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class ExaminationListImplTest {
 
@@ -22,14 +23,13 @@ public class ExaminationListImplTest {
     private Statement st;
     private Connection conn;
     private List<ExaminationList> recordList;
-    private Random random = new Random();
+    private final Random random = new Random();
     private final static String sqlRandomStudentId = "SELECT " +
             "ID " +
             "FROM " +
             "(SELECT ID FROM APPLICANTS " +
             "ORDER BY dbms_random.value) " +
             "WHERE ROWNUM = 1";
-
 
     @BeforeClass
     public void setUp() throws SQLException {
@@ -45,18 +45,14 @@ public class ExaminationListImplTest {
     public void testCreate() throws SQLException {
         String sqlCheckCreate = "SELECT * FROM EXAMINATION_RECORDS WHERE EXAM_RECORD_ID = ?";
         int studentId = getRandomStudentId();
-        int examId = 10;
+        int examId = 10; // for test use static exam_id
         final ExaminationList record = new ExaminationList(studentId , examId , random.nextInt(100));
         final int result = recordListImplUnderTest.create(record);
         record.setRecordId(result);
         PreparedStatement ps = conn.prepareStatement(sqlCheckCreate);
         ps.setInt(1, result);
         ResultSet rs = ps.executeQuery();
-        boolean isCreated = false;
-        if (rs.next()) {
-            isCreated = true;
-        }
-        assertTrue(isCreated);
+        assertTrue(rs.next(), "Record not created");
     }
 
     @Test
@@ -73,6 +69,7 @@ public class ExaminationListImplTest {
     @Test
     public void testGetRecordsByStudent() throws SQLException{
         int studentId = -1;
+        // test works only when DB table with examination records not empty
         ResultSet rs = st.executeQuery(sqlRandomStudentId);
         if (rs.next()) {
             studentId = rs.getInt(1);
@@ -85,20 +82,17 @@ public class ExaminationListImplTest {
                 break;
             }
         }
-        assertTrue(isCorrect);
+        assertTrue(isCorrect, "Error in Getting exam records by student id");
     }
 
     @Test
-    // testing time about 1,5 minutes. TODO check random records
     public void testGetById() {
-        SoftAssert softAssert = new SoftAssert();
+        // check one random record
         recordList = recordListImplUnderTest.getAll();
-        for (ExaminationList el: recordList) {
-            int id = el.getRecordId();
-            ExaminationList result = recordListImplUnderTest.getById(id);
-            softAssert.assertEquals(result, el, "Object from ObjectsList equals Object from DB ");
-        }
-        softAssert.assertAll();
+        Collections.shuffle(recordList);
+        int id = recordList.get(0).getRecordId();
+        ExaminationList result = recordListImplUnderTest.getById(id);
+        assertEquals(result, recordList.get(0), "Object from ObjectsList not equals Object from DB ");
     }
 
     @Test
@@ -119,11 +113,12 @@ public class ExaminationListImplTest {
             }
         }
         assertEquals(result, 1, "Rows updated ");
-        assertTrue(isUpdated, "In DB found Updated object ");
+        assertTrue(isUpdated, "In DB not found Updated object ");
     }
 
     @Test
     public void testDelete() throws SQLException {
+        // get last record id (last row) to delete
         ResultSet rs = st.executeQuery("SELECT " +
                 "MAX(EXAM_RECORD_ID) " +
                 "FROM EXAMINATION_RECORDS");
@@ -135,11 +130,29 @@ public class ExaminationListImplTest {
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM EXAMINATION_RECORDS WHERE EXAM_RECORD_ID = ?");
         ps.setInt(1, idToDelete);
         rs = ps.executeQuery();
-        boolean isDeleted = false;
-        if (!rs.next()) {
-            isDeleted = true;
+        assertFalse(rs.next(), "Expected row not deleted");
+    }
+
+    @Test
+    public void testGetAverageMarkByExam() {
+        List<ExaminationList> records = recordListImplUnderTest.getAll();
+        int examId = 10; // test for only one exam,
+        double sum = 0;
+        double count = 0;
+        double averageMark = 0;
+        for (ExaminationList el : records) {
+            if (el.getExamId() == examId) {
+                sum += el.getGrade();
+                count++;
+            }
         }
-        assertTrue(isDeleted, "Expected row deleted");
+        try {
+            averageMark = sum / count;
+        } catch (ArithmeticException e) {
+            logger.warn("Division by 0! in average mark test");
+        }
+        double result = recordListImplUnderTest.getAverageMarkByExam(examId);
+        assertEquals(Double.compare(averageMark, result), 0, "Wrong average mark");
     }
 
     private int getRandomStudentId() {
@@ -148,7 +161,9 @@ public class ExaminationListImplTest {
         ResultSet rs = null;
         int randomId = -1;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             st = conn.createStatement();
             rs = st.executeQuery(sqlRandomStudentId);
             if (rs.next()) {
