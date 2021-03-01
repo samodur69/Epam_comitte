@@ -5,10 +5,12 @@ import dao.model.Faculty;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.AppException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FacultyImpl implements FacultyDao {
 
@@ -26,7 +28,9 @@ public class FacultyImpl implements FacultyDao {
         ResultSet rs;
         int id = -1;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlCreate);
             ps.setString(1, faculty.getFacultyName());
             ps.setInt(2, faculty.getFacultyCapacity());
@@ -54,7 +58,9 @@ public class FacultyImpl implements FacultyDao {
         Statement st;
         ResultSet rs;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             st = conn.createStatement();
             st.execute(sqlGetAll);
             rs = st.getResultSet();
@@ -87,7 +93,9 @@ public class FacultyImpl implements FacultyDao {
         PreparedStatement ps = null;
         int rows;
         try {
-            conn = DBConnection.getConnection ();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlUpdate);
             ps.setString (1, faculty.getFacultyName ());
             ps.setInt (2, faculty.getFacultyCapacity ());
@@ -113,7 +121,9 @@ public class FacultyImpl implements FacultyDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlDelete);
             ps.setInt (1 , id);
             rows = ps.executeUpdate();
@@ -135,11 +145,13 @@ public class FacultyImpl implements FacultyDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlGetById);
             ps.setInt (1, id);
             rs = ps.executeQuery ();
-            while (rs.next()) {
+            if (rs.next()) {
                 faculty = new Faculty();
                 faculty.setFacultyId (rs.getInt("FACULTY_ID"));
                 faculty.setFacultyName (rs.getString("FACULTY_NAME"));
@@ -164,7 +176,9 @@ public class FacultyImpl implements FacultyDao {
         PreparedStatement ps;
         ResultSet rs;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlGetName);
             ps.setInt(1, id);
             rs = ps.executeQuery();
