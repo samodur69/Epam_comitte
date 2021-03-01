@@ -8,10 +8,12 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.testng.Assert.*;
@@ -22,10 +24,14 @@ public class ApplicantImplTest extends BaseTest{
     private Applicant applicant;
     private Applicant aplEmailTest;
     private ApplicantImpl applServiceUnderTest;
+    List<Applicant> apList;
     private final String email = "test@testng.com";
     private final String emailGet = "asdfg@poiu.ru";
     private Statement st;
     private Connection conn;
+    private final SecureRandom r = new SecureRandom();
+    private final String[] names = {"Alex", "Michael", "Boris"};
+    private final String[] lastNames = {"First", "Ivanov", "Petrov", "Sidorov"};
 
     @BeforeClass
     public void setUp() throws SQLException {
@@ -37,6 +43,7 @@ public class ApplicantImplTest extends BaseTest{
         conn = DBConnection.getConnection();
         System.out.println("tets test");
         st = conn != null ? conn.createStatement() : null;
+        apList = new ArrayList<>();
     }
 
     @AfterClass
@@ -50,6 +57,13 @@ public class ApplicantImplTest extends BaseTest{
 
     @Test(description = "create new Applicant in DB")
     public void testCreate() {
+        String firstName = "";
+        String lastName = "";
+        String email = "";
+        int schoolAverage = r.nextInt(101);
+
+
+
         final int id = applServiceUnderTest.create(applicant);
         applicant.setId(id);
         // id in DB start from 10000
@@ -57,18 +71,28 @@ public class ApplicantImplTest extends BaseTest{
         //  TODO assert to check row
     }
 
-//    @Test
-//    //  TODO
-//    public void testUpdate() {
-//        Applicant applicantUpdate = applicant;
-//        applicantUpdate.setFirstName("");
-//
-//        // Run the test
-//        final int result = applServiceUnderTest.update(applicant);
-//
-//        // Verify the results
-//        assertEquals(0 , result);
-//    }
+    @Test
+    public void testUpdate() {
+        apList = applServiceUnderTest.getAll();
+        Applicant aplUpdate = new Applicant();
+        if (apList.size() > 0) {
+            aplUpdate = apList.get(0);
+        }
+        aplUpdate.setFirstName("Test");
+        aplUpdate.setLastName("Testovich");
+        aplUpdate.setEmail("test@testng.ru");
+        final int result = applServiceUnderTest.update(aplUpdate);
+        apList = applServiceUnderTest.getAll();
+        boolean isUpdated = false;
+        for (Applicant el: apList) {
+            if (el.equals(aplUpdate)) {
+                isUpdated = true;
+                break;
+            }
+        }
+        assertEquals(result, 1, "Rows updated ");
+        assertTrue(isUpdated, "In DB found Updated object ");
+    }
 
     @Test(description = "delete row from DB", dependsOnMethods = {"testCreate"})
     public void testDelete() {
@@ -133,32 +157,4 @@ public class ApplicantImplTest extends BaseTest{
         final boolean result = applServiceUnderTest.checkEmailUnique(emailGet);
         assertFalse(result);
     }
-
-
-
-
-    // зависимые тесты продумать.
-//    @Test
-//    public void testGetTotalMark() {
-//        // Setup
-//
-//        // Run the test
-//        final int result = applServiceUnderTest.getTotalMark(0);
-//
-//        // Verify the results
-//        assertEquals(0 , result);
-//    }
-//
-//    @Test
-//    public void testEnrollAllApplicants() {
-//        // Setup
-//
-//        // Run the test
-//        final int result = applServiceUnderTest.enrollAllApplicants();
-//
-//        // Verify the results
-//        assertEquals(0 , result);
-//    }
-
-
 }
