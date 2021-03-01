@@ -142,12 +142,15 @@ public class ApplicantImplTest extends BaseTest{
     @Test
     public void testCheckEmailUnique() throws SQLException {
         SoftAssert softAssert = new SoftAssert();
+        String correctEmail = "";
         ResultSet rs = st.executeQuery("SELECT " +
                 "ST_EMAIL " +
                 "FROM " +
                 "(SELECT ST_EMAIL FROM APPLICANTS ORDER BY dbms_random.value) " +
                 "WHERE ROWNUM = 1");
-        String correctEmail = rs.getString("ST_EMAIL");
+        if (rs.next()) {
+            correctEmail = rs.getString("ST_EMAIL");
+        }
         String randomEmail = "notexist@email.com";
         final boolean resultNotUnique = applServiceUnderTest.checkEmailUnique(correctEmail);
         final boolean resultUnique = applServiceUnderTest.checkEmailUnique(randomEmail);
