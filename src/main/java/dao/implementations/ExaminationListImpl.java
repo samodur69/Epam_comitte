@@ -5,10 +5,12 @@ import dao.model.ExaminationList;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.AppException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ExaminationListImpl implements ExaminationListDao {
 
@@ -22,8 +24,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         PreparedStatement ps = null;
         ResultSet rs;
         try {
-            conn = DBConnection.getConnection();
-            assert conn != null;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlCreateRecord);
             ps.setInt(1, record.getStudentId());
             ps.setInt(2, record.getExamId());
@@ -53,8 +56,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         Statement st = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
-            assert conn != null;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             st = conn.createStatement();
             rs = st.executeQuery(sqlGetAll);
             while (rs.next()) {
@@ -83,8 +87,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
-            assert conn != null;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlGetAll);
             ps.setInt(1, studentId);
             rs = ps.executeQuery();
@@ -113,8 +118,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
-            assert conn != null;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlGetById);
             ps.setInt (1, id);
             rs = ps.executeQuery ();
@@ -148,8 +154,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         PreparedStatement ps = null;
         int rows;
         try {
-            conn = DBConnection.getConnection ();
-            assert conn != null;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlUpdate);
             ps.setInt(1, record.getStudentId());
             ps.setInt(2, record.getExamId());
@@ -175,8 +182,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            conn = DBConnection.getConnection();
-            assert conn != null;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement (sqlDelete);
             ps.setInt (1 , id);
             rows = ps.executeUpdate();
@@ -198,8 +206,9 @@ public class ExaminationListImpl implements ExaminationListDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            conn = DBConnection.getConnection();
-            assert conn != null;
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sql);
             ps.setInt(1, examId);
             rs = ps.executeQuery();
