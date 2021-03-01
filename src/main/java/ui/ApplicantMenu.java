@@ -3,11 +3,13 @@ package ui;
 import dao.implementations.ApplicantImpl;
 import dao.implementations.FacultyImpl;
 import dao.model.Applicant;
+import service.ApplicantService;
 
 import java.util.Scanner;
 
 public class ApplicantMenu {
     private final static ApplicantImpl appService = new ApplicantImpl();
+    private final static ApplicantService applicantService = new ApplicantService();
     private final static FacultyImpl facService = new FacultyImpl();
     private final static Scanner scan = new Scanner(System.in);
 
@@ -51,7 +53,7 @@ public class ApplicantMenu {
 
     private void showStudentStatus(Applicant applicant) {
         System.out.printf("Dear, %s %s!\n", applicant.getFirstName(), applicant.getLastName());
-        System.out.printf("Your total mark is %d \n", appService.getTotalMark(applicant.getId()));
+        System.out.printf("Your total mark is %d \n", applicantService.getTotalMark(applicant.getId()));
         if ("Y".equals(applicant.getEnrolled())) {
             System.out.printf("\nWe look forward to seeing you on the " +
                     "faculty %s at " +
