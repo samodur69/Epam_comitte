@@ -2,6 +2,7 @@ package data;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 
 public class DBConnection {
@@ -16,15 +17,6 @@ public class DBConnection {
     private DBConnection() {
         try {
             Class.forName("oracle.jdbc.driver.OracleConnection");
-//            Properties properties = new Properties();
-//            try (FileInputStream is = new FileInputStream("/Users/apple/_Projects/Epam_comitte/src/main/resources/app.properties")) {
-//                properties.load(is);
-//                DB_URL = properties.getProperty("DB_URL");
-//                DB_USER = properties.getProperty("DB_USER");
-//                DB_PASSWORD = properties.getProperty("DB_PASSWORD");
-//            } catch (IOException e) {
-//                logger.info("can`t find properties file");
-//            }
         } catch (ClassNotFoundException e) {
             System.out.println("Troubles with DB Driver");
             e.printStackTrace();
@@ -39,7 +31,7 @@ public class DBConnection {
         try {
             return DriverManager.getConnection(instance.DB_URL, instance.DB_USER, instance.DB_PASSWORD);
         } catch (SQLException e) {
-            logger.info("Troubles with return connection");
+            logger.error("Troubles with create connection");
             e.printStackTrace();
             return null;
         }
@@ -99,7 +91,7 @@ public class DBConnection {
                 conn.close();
             }
         } catch (SQLException e) {
-            System.out.println("Troubles with closing connection");
+            logger.warn("Troubles with closing connection");
             e.printStackTrace();
         }
     }
