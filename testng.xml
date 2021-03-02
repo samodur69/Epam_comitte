@@ -1,27 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="All Test Suite">
-    <test verbose="2" preserve-order="true" name="/Users/apple/_Projects/Epam_comitte/src/test">
+<suite name="Admission Committee Services Test Suit">
+    <test verbose="2" preserve-order="true" name="/Users/apple/_Projects/Epam_comitte">
         <classes>
             <class name="dao.implementations.ApplicantImplTest">
-<!--                <methods>-->
-<!--                    <include name="testCreate"/>-->
-<!--                    <include name="testGetAll"/>-->
-<!--                    <include name="testGetById"/>-->
-<!--                    <include name="testGetByEmail"/>-->
-<!--                    <include name="testGetByEnrolled"/>-->
-<!--                </methods>-->
+                <methods>
+                    <include name="testCreate"/>
+                    <include name="testUpdate"/>
+                    <include name="testDelete"/>
+                    <include name="testGetAll"/>
+                    <include name="testGetById"/>
+                    <include name="testGetByEmail"/>
+                    <include name="testGetIdByEmail"/>
+                    <include name="testGetByEnrolled"/>
+                    <include name="testCheckEmailUnique"/>
+                </methods>
             </class>
             <class name="dao.implementations.ExamImplTest">
                 <methods>
                     <include name="testCreate"/>
                     <include name="testGetAll"/>
+                    <include name="testGetById"/>
                     <include name="testUpdate"/>
+                    <include name="testDelete"/>
+                    <include name="testGetNameById"/>
                 </methods>
             </class>
             <class name="dao.implementations.FacultyImplTest">
                 <methods>
+                    <include name="testCreate"/>
+                    <include name="testGetAll"/>
+                    <include name="testUpdate"/>
+                    <include name="testDelete"/>
                     <include name="testGetById"/>
+                    <include name="testGetNameById"/>
+                </methods>
+            </class>
+            <class name="dao.implementations.ExaminationListImplTest">
+                <methods>
+                    <include name="testCreate"/>
+                    <include name="testGetAll"/>
+                    <include name="testGetRecordsByStudent"/>
+                    <include name="testGetById"/>
+                    <include name="testUpdate"/>
+                    <include name="testDelete"/>
+                    <include name="testGetAverageMarkByExam"/>
+                </methods>
+            </class>
+            <class name="service.ApplicantServiceTest">
+                <methods>
+                    <include name="testEnrollAllApplicants"/>
+                    <include name="testGetTotalMark"/>
+                    <include name="testShowTopTenStudents"/>
+                </methods>
+            </class>
+            <class name="service.ExaminationRecordsServiceTest">
+                <methods>
+                    <include name="testCreateRandomExamRecords"/>
+                    <include name="testCreateRandomExamRecordsForAll"/>
+                    <include name="testGetExamsByFaculty"/>
+                    <include name="testShowTopTwentyRecords"/>
+                    <include name="testShowAverageMarkByExams"/>
                 </methods>
             </class>
         </classes>
