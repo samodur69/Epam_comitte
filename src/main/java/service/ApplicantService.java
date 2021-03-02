@@ -3,8 +3,10 @@ package service;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.AppException;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class ApplicantService {
 
@@ -28,7 +30,9 @@ public class ApplicantService {
         Statement st;
         int rowsUpdated = -1;
         try {
-            conn = DBConnection.getConnection ();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             if (conn != null) {
                 st = conn.createStatement();
                 rowsUpdated = st.executeUpdate(sqlEnroll);
@@ -62,7 +66,9 @@ public class ApplicantService {
         ResultSet rs = null;
         int totalMark = 0;
         try {
-            conn = DBConnection.getConnection();
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
             ps = conn.prepareStatement(sqlTotalById);
             ps.setInt(1, id);
             rs = ps.executeQuery();
@@ -77,5 +83,40 @@ public class ApplicantService {
             DBConnection.close(rs, ps, conn);
         }
         return 0;
+    }
+
+    public void showTopTenStudents() {
+        String sqlTopTen = "SELECT " +
+                "b.last_name, b.first_name, a.totalmark " +
+                "FROM " +
+                "total_mark a, applicants b " +
+                "WHERE " +
+                "a.id = b.id " +
+                "GROUP BY " +
+                "b.last_name, b.first_name, a.totalmark " +
+                "ORDER BY a.totalmark DESC " +
+                "FETCH FIRST 10 ROWS ONLY";
+        Connection conn = null;
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
+            st = conn.createStatement();
+            rs = st.executeQuery(sqlTopTen);
+            while (rs.next()) {
+                String lastName = rs.getString("LAST_NAME");
+                String name = rs.getString("FIRST_NAME");
+                int totalMark = rs.getInt("TOTALMARK");
+                System.out.printf("%-12s %-12s %3d\n", lastName, name, totalMark);
+            }
+        } catch (SQLException e) {
+            logger.warn("Error when get top 10 students");
+            e.printStackTrace();
+        } finally {
+            System.out.println(" ");
+            DBConnection.close(rs, st,conn);
+        }
     }
 }
