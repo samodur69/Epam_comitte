@@ -4,20 +4,16 @@ import dao.model.Faculty;
 import data.DBConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.security.SecureRandom;
+import java.sql.*;
+import java.util.Collections;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class FacultyImplTest {
 
@@ -26,6 +22,8 @@ public class FacultyImplTest {
     private Statement st;
     private Connection conn;
     private List<Faculty> facultyList;
+    private final SecureRandom r = new SecureRandom();
+    private final String sqlCheckId = "SELECT * FROM FACULTY_LIST WHERE FACULTY_ID = ?";
 
     @BeforeClass
     public void setUp() throws SQLException {
@@ -34,17 +32,20 @@ public class FacultyImplTest {
         if (conn != null) {
             st = conn.createStatement();
         }
-    }
-
-    @BeforeMethod
-    public void setUpBeforeMethod() {
+        logger.info("Start testing Faculty DAO class");
     }
 
     @Test
-    public void testCreate() {
-        final Faculty faculty = new Faculty("TestFaculty" , 10 , 250);
-        final int result = facultyImplUnderTest.create(faculty);
-        assertTrue(result > 0);
+    public void testCreate() throws SQLException {
+        String facultyName = "Faculty" + r.nextInt(10);
+        // min grade and capacity are static for easy further testing
+        Faculty facultyExpected = new Faculty(facultyName , 10 , 250);
+        final int expectedId = facultyImplUnderTest.create(facultyExpected);
+        facultyExpected.setFacultyId(expectedId);
+        PreparedStatement ps = conn.prepareStatement(sqlCheckId);
+        ps.setInt(1, expectedId);
+        ResultSet rs = ps.executeQuery();
+        assertTrue(rs.next(), "Faculty not created");
     }
 
     @Test
@@ -55,7 +56,7 @@ public class FacultyImplTest {
             expectedCount = rs.getInt(1);
         }
         facultyList = facultyImplUnderTest.getAll();
-        assertEquals(facultyList.size(), expectedCount);
+        assertEquals(facultyList.size(), expectedCount, "Wrong number of records from DB");
     }
 
     @Test
@@ -77,26 +78,21 @@ public class FacultyImplTest {
             }
         }
         assertEquals(result, 1, "Rows updated ");
-        assertTrue(isUpdated, "In DB found Updated object ");
+        assertTrue(isUpdated, "In DB not found Updated object ");
     }
 
     @Test
     public void testDelete() throws SQLException {
-        ResultSet rs = st.executeQuery("SELECT COUNT(FACULTY_ID), MAX(FACULTY_ID) FROM FACULTY_LIST");
-        int rowsBefore = 0;
+        // delete last row only
+        ResultSet rs = st.executeQuery("SELECT MAX(FACULTY_ID) FROM FACULTY_LIST");
         int idToDelete = 0;
         if (rs.next()) {
-            rowsBefore = rs.getInt("COUNT(FACULTY_ID)");
             idToDelete = rs.getInt("MAX(FACULTY_ID)");
         }
-        final int result = facultyImplUnderTest.delete(idToDelete);
-        int rowsAfter = 0;
-        rs = st.executeQuery("SELECT COUNT(FACULTY_ID) FROM FACULTY_LIST");
-        if (rs.next()) {
-            rowsAfter = rs.getInt(1);
-        }
-        assertEquals(result , 1);
-        assertEquals(rowsAfter + 1, rowsBefore);
+        facultyImplUnderTest.delete(idToDelete);
+        PreparedStatement ps = conn.prepareStatement(sqlCheckId);
+        ps.setInt(1, idToDelete);
+        assertFalse(rs.next(), "Expected row not delete");
     }
 
     @Test
@@ -114,6 +110,7 @@ public class FacultyImplTest {
     @Test
     public void testGetNameById() {
         facultyList = facultyImplUnderTest.getAll();
+        Collections.shuffle(facultyList);
         int idToGet = 0;
         String expected = "";
         if (facultyList.size() > 0) {
@@ -121,21 +118,6 @@ public class FacultyImplTest {
             expected = facultyList.get(0).getFacultyName();
         }
         final String result = facultyImplUnderTest.getNameById(idToGet);
-        assertEquals(result , expected);
-    }
-
-    @AfterClass
-    public void finish() {
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                logger.warn("Error when close testNG connection");
-                e.printStackTrace();
-            } finally {
-                conn = null;
-            }
-
-        }
+        assertEquals(result , expected, "Wrong Faculty name");
     }
 }
