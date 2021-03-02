@@ -48,7 +48,7 @@ public class ExaminationRecordsService {
         }
     }
 
-    public static void createRandomExamRecordsForAll() {
+    public void createRandomExamRecordsForAll() {
         List<Applicant> applicantList = aplService.getAll();
         for (Applicant el : applicantList) {
             createRandomExamRecords(el.getId());
@@ -56,7 +56,7 @@ public class ExaminationRecordsService {
         System.out.println("\n Create samples records done\n");
     }
 
-    public static void createRandomExamRecords(int studentId) {
+    public void createRandomExamRecords(int studentId) {
         SecureRandom random = new SecureRandom();
         ExaminationListImpl recordService = new ExaminationListImpl();
         Applicant applicant = aplService.getById(studentId);
@@ -67,7 +67,7 @@ public class ExaminationRecordsService {
         }
     }
 
-    public static List<Exam> getExamsByFaculty(int facultyId) {
+    public List<Exam> getExamsByFaculty(int facultyId) {
         List<Exam> exams = new ArrayList<>();
         ExamImpl examService = new ExamImpl();
         String sqlGetExams = "SELECT EXAM_ID FROM EXAMS_FACULTY WHERE FACULTY_ID = ?";
@@ -92,5 +92,42 @@ public class ExaminationRecordsService {
             DBConnection.close(rs, ps, conn);
         }
         return exams;
+    }
+
+    public void showTopTwentyRecords() {
+        String sqlTopTwenty = "SELECT " +
+                "c.last_name, c.first_name, b.exam_name, a.grade " +
+                "FROM  " +
+                "examination_records a, exams_list b, applicants c " +
+                "WHERE  " +
+                "c.id = a.student_id and  a.exam_id = b.exam_id " +
+                "GROUP BY " +
+                "c.first_name, c.last_name, a.grade, b.exam_name " +
+                "ORDER by   " +
+                "a.grade desc " +
+                "FETCH FIRST 20 ROWS only";
+        Connection conn = null;
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            conn = Optional
+                    .ofNullable(DBConnection.getConnection())
+                    .orElseThrow(() -> new AppException("Connection is null"));
+            st = conn.createStatement();
+            rs = st.executeQuery(sqlTopTwenty);
+            while (rs.next()) {
+                String lastName = rs.getString("LAST_NAME");
+                String name = rs.getString("FIRST_NAME");
+                String examName = rs.getString("EXAM_NAME");
+                int mark = rs.getInt("GRADE");
+                System.out.printf("%-11s %-10s  %-16s %3d\n", lastName, name, examName, mark);
+            }
+
+        } catch (SQLException e) {
+            logger.warn("Error when try to show top 20 exam records");
+            e.printStackTrace();
+        } finally {
+            DBConnection.close(rs, st, conn);
+        }
     }
 }
