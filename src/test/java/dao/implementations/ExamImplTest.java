@@ -8,14 +8,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.security.SecureRandom;
+import java.sql.*;
+import java.util.Collections;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class ExamImplTest extends BaseTest{
 
@@ -23,7 +21,8 @@ public class ExamImplTest extends BaseTest{
     private static final Logger logger = LoggerFactory.getLogger(ExamImplTest.class);
     private Statement st;
     private Connection conn;
-    private List<Exam> examsList;
+    private List<Exam> examList;
+    private final SecureRandom r = new SecureRandom();
 
 
 
@@ -31,43 +30,52 @@ public class ExamImplTest extends BaseTest{
     public void startSetUp() throws SQLException {
         examImplUnderTest = new ExamImpl();
         conn = DBConnection.getConnection();
-        st = conn.createStatement();
+        if (conn != null) {
+            st = conn.createStatement();
+        }
+        logger.info("Start testing Exam DAO class");
     }
 
     @Test
-    public void testCreate() {
-        final Exam exam = new Exam("TestExam");
-        final int result = examImplUnderTest.create(exam);
-        assertTrue(result > 0);
-        // TODO check created exam
+    public void testCreate() throws SQLException {
+        String examName = "Test Exam" + r.nextInt(10);
+        final Exam exam = new Exam(examName);
+        final int id = examImplUnderTest.create(exam);
+        exam.setExamId(id);
+        String sqlCheck = "SELECT * FROM EXAMS_LIST WHERE EXAM_ID = ?";
+        PreparedStatement ps = conn.prepareStatement(sqlCheck);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        assertTrue(rs.next(), "Exam not created");
     }
 
     @Test
     public void testGetAll() throws SQLException {
-        int expectedResult = 0;
+        int expectedResult = -1;
         ResultSet rs = st.executeQuery("SELECT COUNT(exam_id) FROM EXAMS_LIST");
         if (rs.next()) {
             expectedResult = rs.getInt(1);
         }
-        final List<Exam> examsList = examImplUnderTest.getAll();
-        assertEquals(expectedResult , examsList.size());
+        examList = examImplUnderTest.getAll();
+        assertEquals(expectedResult , examList.size(), "Wrong number of records from DB");
     }
 
-    @Test(dependsOnMethods = {"testGetAll"})
+    @Test
     public void testGetById() {
         SoftAssert softAssert = new SoftAssert();
-        List<Exam> examList = examImplUnderTest.getAll();
+        examList = examImplUnderTest.getAll();
         for (Exam el: examList) {
             int id = el.getExamId();
             Exam result = examImplUnderTest.getById(id);
-            softAssert.assertEquals(el, result);
+            softAssert.assertEquals(el, result, "Exam objects not equals");
         }
         softAssert.assertAll();
     }
 
-    @Test (dependsOnMethods = {"testCreate"})
+    @Test
     public void testUpdate() {
-        List<Exam> examList = examImplUnderTest.getAll();
+        examList = examImplUnderTest.getAll();
+        Collections.shuffle(examList);
         Exam examUpdate = new Exam();
         if (examList.size() > 0) {
             examUpdate = examList.get(0);
@@ -75,45 +83,42 @@ public class ExamImplTest extends BaseTest{
         examUpdate.setExamName("UpdateTest");
         final int result = examImplUnderTest.update(examUpdate);
         examList = examImplUnderTest.getAll();
-        boolean updated = false;
+        boolean isUpdated = false;
         for (Exam el: examList) {
-            if (el.getExamName().equals(examUpdate.getExamName())) {
-                updated = true;
+            if (el.equals(examUpdate)) {
+                isUpdated = true;
+                break;
             }
         }
-        assertTrue(updated);
+        assertEquals(result, 1, "Rows updated");
+        assertTrue(isUpdated, "In DB not found updated object");
     }
 
     @Test
     public void testDelete() throws SQLException {
-        ResultSet rs = st.executeQuery("SELECT COUNT(EXAM_ID), MAX(EXAM_ID) FROM EXAMS_LIST");
-        int rowsBefore = 0;
+        // delete last row from DB
+        ResultSet rs = st.executeQuery("SELECT MAX(EXAM_ID) FROM EXAMS_LIST");
         int idToDelete = 0;
         if (rs.next()) {
-            rowsBefore = rs.getInt("COUNT(EXAM_ID)");
             idToDelete = rs.getInt("MAX(EXAM_ID)");
         }
-        final int result = examImplUnderTest.delete(idToDelete);
-        rs = null;
-        int rowsAfter = 0;
-        rs = st.executeQuery("SELECT COUNT(EXAM_ID) FROM EXAMS_LIST");
-        if (rs.next()) {
-            rowsAfter = rs.getInt(1);
-        }
-        assertEquals(result , 1);
-        assertTrue(rowsAfter + 1 == rowsBefore);
+        examImplUnderTest.delete(idToDelete);
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM EXAMS_LIST WHERE EXAM_ID = ?");
+        ps.setInt(1, idToDelete);
+        rs = ps.executeQuery();
+        assertFalse(rs.next(), "Expected row was not deleted");
     }
 
     @Test
     public void testGetNameById() {
-        examsList = examImplUnderTest.getAll();
+        examList = examImplUnderTest.getAll();
         int idToGet = 0;
         String expected = "";
-        if (examsList.size() > 0) {
-            idToGet = examsList.get(0).getExamId();
-            expected = examsList.get(0).getExamName();
+        if (examList.size() > 0) {
+            idToGet = examList.get(0).getExamId();
+            expected = examList.get(0).getExamName();
         }
         final String result = examImplUnderTest.getNameById(idToGet);
-        assertEquals(result , expected);
+        assertEquals(result , expected, "Wrong exam name");
     }
 }
