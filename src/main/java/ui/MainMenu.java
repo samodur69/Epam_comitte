@@ -3,7 +3,6 @@ package ui;
 import dao.implementations.ApplicantImpl;
 import dao.model.Applicant;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,7 +16,7 @@ public class MainMenu {
             System.out.println("" +
                     "1. Sign up as new Applicant\n" +
                     "2. Applicant Sign in\n" +
-                    "3. Admin login\n" +
+                    "3. Administration Services and Statistic\n" +
                     "4. Show enrolled students list\n" +
                     "0. Exit");
             switch (scanner.nextInt()) {
@@ -28,12 +27,15 @@ public class MainMenu {
                     new ApplicantMenu().studentLogIn();
                     break;
                 case 3:
-                    System.out.println("Admin menu");
                     new UniversityAdministration().start();
                     break;
                 case 4:
                     System.out.println("Enrolled Students list");
                     List<Applicant> applicants = appService.getByEnrolled();
+                    if (applicants.size() == 0) {
+                        System.out.println("There are currently no enrolled students. " +
+                                "Perform the enrollment operation first (in Admin menu)\n");
+                    }
                     for (Applicant el: applicants) {
                         System.out.println (el.toString());
                     }
