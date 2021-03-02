@@ -11,6 +11,9 @@ public class UniversityAdministration {
     private final ApplicantService applicantService = new ApplicantService();
     private final ExaminationRecordsService examService = new ExaminationRecordsService();
 
+    /**
+     * Most services and statistic in console ui
+     */
     public void start() {
         System.out.println("Administration Services and Statistics\n");
         boolean inMenu = true;

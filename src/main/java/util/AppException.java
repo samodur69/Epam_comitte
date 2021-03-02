@@ -1,5 +1,8 @@
 package util;
 
+/**
+ * exception class to catch Connection troubles and warnings
+ */
 public class AppException extends RuntimeException {
 
     public AppException() {

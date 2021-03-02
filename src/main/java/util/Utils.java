@@ -4,6 +4,10 @@ import java.security.SecureRandom;
 
 public class Utils {
 
+    /**
+     * static method to generate pin code
+     * @return pin as String
+     */
     public static String generatePin() {
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder();

@@ -8,8 +8,12 @@ import dao.model.Applicant;
 import dao.model.ExaminationList;
 import dao.model.Faculty;
 
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
 
+/**
+ * Service to create and register New Applicant
+ */
 public class NewApplicant {
 
     private final Scanner scan = new Scanner(System.in);

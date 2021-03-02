@@ -4,6 +4,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Garbage class. I had troubles with Oracle connection and with properties it don`t work correctly
+ */
 public class GetProperties {
 
     public String getDbProperties(String property) {

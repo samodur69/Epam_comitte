@@ -12,6 +12,12 @@ public class ApplicantService {
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicantService.class);
 
+    /**
+     * After create new Applicant, he is in wait list.
+     * Enroll all applicants calculates total scores
+     * and enrolls students based on the minimum passing score for each department by querying the database
+     * @return num of enrolled students (updated rows)
+     */
     public int enrollAllApplicants() {
         String sqlEnroll = "" +
                 "UPDATE " +
@@ -45,6 +51,11 @@ public class ApplicantService {
         return 0;
     }
 
+    /**
+     * Method to calculate total mark by student ID. Sum of all exams plus School average mark
+     * @param id - student ID
+     * @return Sum of all marks
+     */
     public int getTotalMark(int id) {
         String sqlTotalById = "SELECT TotalMark " +
                 "FROM " +
@@ -85,6 +96,9 @@ public class ApplicantService {
         return 0;
     }
 
+    /**
+     * print to concole output top 10 students by their total mark
+     */
     public void showTopTenStudents() {
         String sqlTopTen = "SELECT " +
                 "b.last_name, b.first_name, a.totalmark " +
