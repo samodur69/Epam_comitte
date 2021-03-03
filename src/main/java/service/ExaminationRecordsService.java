@@ -22,6 +22,9 @@ public class ExaminationRecordsService {
     private static final Logger logger = LoggerFactory.getLogger(ExaminationRecordsService.class);
     private final static ApplicantImpl aplService = new ApplicantImpl();
 
+    /**
+     * func to show average mark by every exam from Examination Records table.
+     */
     public static void showAverageMarkByExams() {
         String sqlAvg = "SELECT EXAM_ID, AVG(GRADE) FROM EXAMINATION_RECORDS GROUP BY EXAM_ID";
         Connection conn = null;
@@ -48,6 +51,10 @@ public class ExaminationRecordsService {
         }
     }
 
+    /**
+     * Method generate random examination records for every student.
+     * The method looks at the student's faculty, picks up exams for it, and gives random grades
+     */
     public void createRandomExamRecordsForAll() {
         List<Applicant> applicantList = aplService.getAll();
         for (Applicant el : applicantList) {
@@ -56,6 +63,11 @@ public class ExaminationRecordsService {
         System.out.println("\n Create samples records done\n");
     }
 
+    /**
+     * Method generate random examination records for student. As param - student id.
+     * The method looks at the student's faculty, picks up exams for it, and gives random grades
+     * return - 3 records in table Examination records
+     */
     public void createRandomExamRecords(int studentId) {
         SecureRandom random = new SecureRandom();
         ExaminationListImpl recordService = new ExaminationListImpl();

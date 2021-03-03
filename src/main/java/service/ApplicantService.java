@@ -97,7 +97,7 @@ public class ApplicantService {
     }
 
     /**
-     * print to concole output top 10 students by their total mark
+     * print to console output top 10 students by their total mark
      */
     public void showTopTenStudents() {
         String sqlTopTen = "SELECT " +

@@ -1,6 +1,8 @@
 package service;
 
-public class ApplicantServiceTest {
+import dao.implementations.BaseTest;
+
+public class ApplicantServiceTest extends BaseTest {
 
 //    private ApplicantService applicantServiceUnderTest;
 //    private ApplicantImpl aplImplService;

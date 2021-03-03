@@ -38,19 +38,27 @@ public class ApplicantImplTest extends BaseTest{
         logger.info("Start testing Applicant DAO class");
     }
 
-
+    /**
+     * create new object. get from db its DB sequence ID. After check it in DB by it`s id
+     * @throws SQLException
+     */
     @Test(description = "create new Applicant in DB")
     public void testCreate() throws SQLException {
-        String sql = "SELECT * FROM APPLICANTS WHERE ID = ?";
         Applicant applicant = applicantGenerator();
         final int id = applServiceUnderTest.create(applicant);
         applicant.setId(id);
+        String sql = "SELECT * FROM APPLICANTS WHERE ID = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         assertTrue(rs.next(), "Applicant not created");
     }
 
+    /**
+     * get list of objects from DB -> Shuffle list to randomize choice ->
+     * -> get first object -> update it -> get all objects -> check our updated object.
+     *  Another way -  find object by ID
+     */
     @Test
     public void testUpdate() {
         Applicant aplUpdate = new Applicant();
@@ -74,6 +82,10 @@ public class ApplicantImplTest extends BaseTest{
         assertTrue(isUpdated, "In DB found Updated object ");
     }
 
+    /**
+     * get last id from table -> delete -> try to select deleted row
+     * @throws SQLException
+     */
     @Test(description = "delete row from DB")
     public void testDelete() throws SQLException {
         // delete last row
@@ -159,6 +171,10 @@ public class ApplicantImplTest extends BaseTest{
         softAssert.assertAll();
     }
 
+    /**
+     *  func to create random Object for create/update Test
+     * @return randomized Applicant Object
+     */
     public Applicant applicantGenerator() {
         int index = r.nextInt(names.length);
         String firstName = names[index];
