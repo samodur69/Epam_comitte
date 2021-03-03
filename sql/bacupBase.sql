@@ -1,77 +1,35 @@
---------------------------------------------------------
---  File created - четверг-февраля-25-2021
---------------------------------------------------------
---------------------------------------------------------
---  DDL for Sequence EXAM_RECORD_ID
---------------------------------------------------------
 
-   CREATE SEQUENCE  "ADMIN"."EXAM_RECORD_ID"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 221 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
---------------------------------------------------------
---  DDL for Sequence SQ_EXAM_ID
---------------------------------------------------------
+   create sequence  "SQ_EXAM_ID"  minvalue 1 maxvalue 999 increment by 5 start with 410 cache 20;
 
-   CREATE SEQUENCE  "ADMIN"."SQ_EXAM_ID"  MINVALUE 1 MAXVALUE 999 INCREMENT BY 5 START WITH 110 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
---------------------------------------------------------
---  DDL for Sequence SQ_FACULTY_ID
---------------------------------------------------------
+   create sequence  "SQ_EXAM_RECORD_ID"  minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 521 cache 20;
 
-  CREATE SEQUENCE  "ADMIN"."SQ_FACULTY_ID"  MINVALUE 1 MAXVALUE 1000 INCREMENT BY 10 START WITH 201 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
-  CREATE SEQUENCE  "ADMIN"."SQ_STUDENT_ID"  MINVALUE 10000 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 10200 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
-  CREATE SEQUENCE  "ADMIN"."SQ_TEACHER_ID"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 21 CACHE 20 NOORDER  NOCYCLE  NOKEEP  NOSCALE  GLOBAL ;
+   create sequence  "SQ_FACULTY_ID"  minvalue 1 maxvalue 1000 increment by 10 start with 841 cache 20;
 
-  CREATE TABLE "ADMIN"."APPLICANTS"
-   (	"ID" NUMBER(*,0),
-	"FIRST_NAME" VARCHAR2(30 BYTE) COLLATE "USING_NLS_COMP",
-	"LAST_NAME" VARCHAR2(30 BYTE) COLLATE "USING_NLS_COMP",
-	"SCHOOL_AVG_SCORES" NUMBER(*,0),
-	"FACULTY_ID" NUMBER,
-	"ST_EMAIL" VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP",
-	"ST_PASSWORD" VARCHAR2(20 BYTE) COLLATE "USING_NLS_COMP",
-	"ENROLLED" VARCHAR2(1 BYTE) COLLATE "USING_NLS_COMP"
-   )  DEFAULT COLLATION "USING_NLS_COMP" ;
---------------------------------------------------------
---  DDL for Table EXAMINATION_RECORDS
---------------------------------------------------------
+   create sequence  "SQ_STUDENT_ID"  minvalue 10000 maxvalue 9999999999999999999999999999 increment by 1 start with 10300 cache 20;
 
-  CREATE TABLE "ADMIN"."EXAMINATION_RECORDS"
-   (	"STUDENT_ID" NUMBER,
-	"EXAM_ID" NUMBER,
-	"GRADE" NUMBER,
-	"DATETIME" DATE,
-	"EXAM_RECORD_ID" NUMBER
-   )  DEFAULT COLLATION "USING_NLS_COMP" ;
---------------------------------------------------------
---  DDL for Table EXAMS_FACULTY
---------------------------------------------------------
+   create sequence  "SQ_TEACHER_ID"  minvalue 1 maxvalue 9999999999999999999999999999 increment by 1 start with 21 cache 20;
 
-  CREATE TABLE "ADMIN"."EXAMS_FACULTY"
-   (	"FACULTY_ID" NUMBER,
-	"EXAM_ID" NUMBER
-   )  DEFAULT COLLATION "USING_NLS_COMP" ;
---------------------------------------------------------
---  DDL for Table EXAMS_LIST
---------------------------------------------------------
+  create TABLE
+  "APPLICANTS" (
+  "ID" NUMBER(*,0),
+  "FIRST_NAME" VARCHAR2(30 BYTE) COLLATE "USING_NLS_COMP",
+  "LAST_NAME" VARCHAR2(30 BYTE) COLLATE "USING_NLS_COMP",
+  "SCHOOL_AVG_SCORES" NUMBER(*,0),
+  "FACULTY_ID" NUMBER,
+  "ST_EMAIL" VARCHAR2(50 BYTE) COLLATE "USING_NLS_COMP",
+  "ST_PASSWORD" VARCHAR2(20 BYTE) COLLATE "USING_NLS_COMP",
+  "ENROLLED" VARCHAR2(1 BYTE) COLLATE "USING_NLS_COMP"
+  )  DEFAULT COLLATION "USING_NLS_COMP" ;
 
-  CREATE TABLE "ADMIN"."EXAMS_LIST"
-   (	"EXAM_ID" NUMBER,
-	"EXAM_NAME" VARCHAR2(40 BYTE) COLLATE "USING_NLS_COMP"
-   )  DEFAULT COLLATION "USING_NLS_COMP" ;
---------------------------------------------------------
---  DDL for Table FACULTY_LIST
---------------------------------------------------------
+  create TABLE "EXAMINATION_RECORDS" ("STUDENT_ID" NUMBER, "EXAM_ID" NUMBER, "GRADE" NUMBER, "EXAM_RECORD_ID" NUMBER)  DEFAULT COLLATION "USING_NLS_COMP" ;
 
-  CREATE TABLE "ADMIN"."FACULTY_LIST"
-   (	"FACULTY_ID" NUMBER,
-	"FACULTY_NAME" VARCHAR2(40 BYTE) COLLATE "USING_NLS_COMP",
-	"FACULTY_CAPACITY" NUMBER,
-	"FACULTY_MIN_GRADE" NUMBER
-   )  DEFAULT COLLATION "USING_NLS_COMP" ;
---------------------------------------------------------
---  DDL for View TOTAL_MARK
---------------------------------------------------------
+  create TABLE "EXAMS_FACULTY" ("FACULTY_ID" NUMBER, "EXAM_ID" NUMBER)  DEFAULT COLLATION "USING_NLS_COMP" ;
 
-  CREATE OR REPLACE FORCE EDITIONABLE VIEW "ADMIN"."TOTAL_MARK" ("ID", "ENROLLED", "FACULTET", "TOTALMARK") DEFAULT COLLATION "USING_NLS_COMP"  AS
-  select
+  create TABLE "EXAMS_LIST" ("EXAM_ID" NUMBER, "EXAM_NAME" VARCHAR2(40 BYTE) COLLATE "USING_NLS_COMP")  DEFAULT COLLATION "USING_NLS_COMP" ;
+
+  create TABLE "FACULTY_LIST" ("FACULTY_ID" NUMBER, "FACULTY_NAME" VARCHAR2(40 BYTE) COLLATE "USING_NLS_COMP", "FACULTY_CAPACITY" NUMBER, "FACULTY_MIN_GRADE" NUMBER)  DEFAULT COLLATION "USING_NLS_COMP" ;
+
+  create or replace force EDITIONABLE VIEW "TOTAL_MARK" ("ID", "ENROLLED", "FACULTET", "TOTALMARK") DEFAULT COLLATION "USING_NLS_COMP"  AS select
             a.student_id as id,
             b.enrolled as enrolled,
             b.faculty_id as facultet,
@@ -84,308 +42,340 @@
         group by
             a.student_id, b.school_avg_scores, b.faculty_id, b.enrolled
 ;
-REM INSERTING into ADMIN.APPLICANTS
+REM INSERTING into APPLICANTS
 SET DEFINE OFF;
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10000','Alexey','Nadenenko','79','10','123@dsjhf.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10001','Gleb ','Malahov','67','10','123@qw.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10002','Nikolay','Lukashenko','25','10','luka@shen.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10003','Igor','Sechin','47','10','sechin@loh.ru','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10004','Emmanuel','Macron','85','10','makron@sobaka.ru','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10005','Francois','Olland','65','10','ollando@re.fr','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10006','Nicolas','Sarkozy','90','10','Sarkozy@telki.fr','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10007','Jacques','Chirac','95','10','Chirac@war.fr','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10008','Boris','Jonson','38','10','Boris@redhead.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10009','Teresa','May','50','20','teresa@may.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10010','David','Cameron','63','20','David@titanik.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10011','Gordon','Brown','59','20','Gordom@neramsay.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10012','Tony','Blar','80','20','Tony@blar.com','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10013','John','Major','70','20','John@major.ru','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10014','Margaret','Teatcher','78','20','Margo@telki.ru','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10120','Petr','First','56','10','petr@spb.ru','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10121','Ekaterina','Second','56','20','prostitutki@spb.ru','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10122','Pavel','Third','76','30','pavel@spb.ru','1232','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10123','Nikolay','Second','45','40','rasstrel@zcar.ru','1234','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10124','Vladimir','Lenin','78','30','lenin@zhiv.ru','4542','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10125','Iosif','Stalin','34','40','genozvale@ussr.ru','3123','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10126','George','Malenkov','67','20','anybody@ussr.com','1245','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10127','Nikita','Hrushev','34','10','kukuruzka@ussr.us','5643','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10128','Leo','Brezhnev','56','30','leo@netitanik.ru','4356','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10129','Jura','Andropov','34','40','andro@pov.ru','8732','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10130','Kostya','Chernenko','56','30','cher@nen.co','5657','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10131','Michael','Gorbachev','78','40','Gorba@chev.ru','3456','N');
-Insert into ADMIN.APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10105','Boris','Eltsin','10','10','borja@propilvse.ru','5325','N');
-REM INSERTING into ADMIN.EXAMINATION_RECORDS
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10000','Test','Testovich','79','10','123@dsjhf.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10001','Gleb ','Malahov','67','10','123@qw.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10002','Nikolay','Lukashenko','25','10','luka@shen.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10003','Igor','Sechin','47','10','sechin@loh.ru','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10004','Emmanuel','Macron','85','10','makron@sobaka.ru','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10005','Francois','Olland','65','10','ollando@re.fr','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10006','Nicolas','Sarkozy','90','10','Sarkozy@telki.fr','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10007','Jacques','Chirac','95','10','Chirac@war.fr','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10008','Boris','Jonson','38','10','Boris@redhead.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10009','Test','Testovich','50','20','teresa@may.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10010','David','Cameron','63','20','David@titanik.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10011','Gordon','Brown','59','20','Gordom@neramsay.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10012','Tony','Blar','80','20','Tony@blar.com','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10013','John','Major','70','20','John@major.ru','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10014','Margaret','Teatcher','78','20','Margo@telki.ru','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10120','Petr','First','56','10','petr@spb.ru','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10121','Ekaterina','Second','56','20','prostitutki@spb.ru','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10261','Jhon','Dou','55','20','asdfg@poiu.ru','7775','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10122','Pavel','Third','76','30','pavel@spb.ru','1232','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10123','Nikolay','Second','45','40','rasstrel@zcar.ru','1234','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10124','Vladimir','Lenin','78','30','lenin@zhiv.ru','4542','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10125','Iosif','Stalin','34','40','genozvale@ussr.ru','3123','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10126','George','Malenkov','67','20','anybody@ussr.com','1245','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10127','Nikita','Hrushev','34','10','kukuruzka@ussr.us','5643','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10128','Leo','Brezhnev','56','30','leo@netitanik.ru','4356','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10129','Jura','Andropov','34','40','andro@pov.ru','8732','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10130','Kostya','Chernenko','56','30','cher@nen.co','5657','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10131','Michael','Gorbachev','78','40','Gorba@chev.ru','3456','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10267','Alex','Dou','20','10','Alex2@testng.com','2257','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10105','Boris','Eltsin','10','10','borja@propilvse.ru','5325','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10282','Michael','Ivanov','75','401','Michael2@testng.com','1793','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10266','Boris','First','78','20','Boris7@testng.com','4717','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10281','Michael','Dou','6','20','Michael9@testng.com','0571','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10263','Michael','Sidorov','31','20','Michael9@testng.com','9007','N');
+insert into APPLICANTS (ID,FIRST_NAME,LAST_NAME,SCHOOL_AVG_SCORES,FACULTY_ID,ST_EMAIL,ST_PASSWORD,ENROLLED) values ('10264','Boris','Petrov','56','401','Boris8@testng.com','3539','N');
+REM INSERTING into EXAMINATION_RECORDS
 SET DEFINE OFF;
-REM INSERTING into ADMIN.EXAMS_FACULTY
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10000','10','1','423');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10000','15','82','424');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10000','40','14','425');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10001','10','3','426');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10001','15','71','427');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10001','10','1','421');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10001','40','49','428');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10002','10','67','429');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10002','15','58','430');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10002','40','72','431');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10003','10','7','432');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10003','15','100','433');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10003','40','26','434');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10004','10','26','435');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10004','15','51','436');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10004','40','32','437');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10005','10','96','438');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10005','15','8','439');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10005','40','17','440');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10006','10','100','441');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10006','15','89','442');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10006','40','53','443');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10007','10','4','444');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10007','15','9','445');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10007','40','4','446');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10008','10','87','447');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10008','15','73','448');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10008','40','68','449');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10009','10','2','450');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10009','40','23','451');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10009','20','51','452');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10010','10','70','453');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10010','20','26','455');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10011','10','58','456');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10011','40','85','457');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10014','10','8','465');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10014','40','8','466');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10014','20','19','467');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10124','15','59','483');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10131','40','80','504');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10131','10','97','505');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10131','20','21','506');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10105','10','4','507');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10105','15','20','508');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10105','40','50','509');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10011','20','21','458');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10012','10','95','459');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10012','40','84','460');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10012','20','37','461');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10013','10','77','462');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10013','40','19','463');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10013','20','86','464');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10123','40','76','480');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10123','10','57','481');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10123','20','68','482');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10125','40','27','486');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10125','10','85','487');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10125','20','87','488');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10126','40','72','490');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10126','20','16','491');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10127','10','47','492');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10127','15','35','493');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10127','40','81','494');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10128','15','63','495');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10128','20','89','496');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10010','40','24','454');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10120','10','41','468');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10120','15','81','469');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10120','40','95','470');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10121','10','69','471');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10121','40','66','472');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10121','20','91','473');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10124','40','18','485');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10261','10','10','474');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10261','40','79','475');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10261','20','52','476');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10122','15','92','477');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10122','20','58','478');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10122','40','67','479');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10124','20','16','484');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10126','10','32','489');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10128','40','98','497');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10129','40','5','498');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10129','10','6','499');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10129','20','11','500');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10130','15','91','501');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10130','20','80','502');
+--insert into EXAMINATION_RECORDS (STUDENT_ID,EXAM_ID,GRADE,EXAM_RECORD_ID) values ('10130','40','65','503');
+REM INSERTING into EXAMS_FACULTY
 SET DEFINE OFF;
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('10','10');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('10','15');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('10','40');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('20','10');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('20','40');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('20','20');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('30','15');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('30','20');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('30','40');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('40','40');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('40','10');
-Insert into ADMIN.EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('40','20');
-REM INSERTING into ADMIN.EXAMS_LIST
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('10','10');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('10','15');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('10','40');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('20','10');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('20','40');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('20','20');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('30','15');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('30','20');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('30','40');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('40','40');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('40','10');
+insert into EXAMS_FACULTY (FACULTY_ID,EXAM_ID) values ('40','20');
+REM INSERTING into EXAMS_LIST
 SET DEFINE OFF;
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('10','Comp Science');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('15','Mathematics');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('20','English language');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('25','Chemistry');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('30','Physics');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('35','Citezenship');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('40','Java Basic');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('45','Economics');
-Insert into ADMIN.EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('50','Management');
-REM INSERTING into ADMIN.FACULTY_LIST
+insert into EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('10','UpdateTest');
+insert into EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('15','Mathematics');
+insert into EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('20','English language');
+insert into EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('25','Chemistry');
+insert into EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('30','Physics');
+insert into EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('35','Citezenship');
+insert into EXAMS_LIST (EXAM_ID,EXAM_NAME) values ('40','Java Basic');
+REM INSERTING into FACULTY_LIST
 SET DEFINE OFF;
-Insert into ADMIN.FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('10','Computer Science','10','310');
-Insert into ADMIN.FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('20','Java Core','10','330');
-Insert into ADMIN.FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('30','PHYSICS','10','320');
-Insert into ADMIN.FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('40','Mathematics','10','310');
-REM INSERTING into ADMIN.TOTAL_MARK
+insert into FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('401','UpdatedFacultyName','10','333');
+insert into FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('10','Computer Science','10','310');
+insert into FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('20','Java Core','10','330');
+insert into FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('30','PHYSICS','10','320');
+insert into FACULTY_LIST (FACULTY_ID,FACULTY_NAME,FACULTY_CAPACITY,FACULTY_MIN_GRADE) values ('40','Mathematics','10','310');
+REM INSERTING into TOTAL_MARK
 SET DEFINE OFF;
---------------------------------------------------------
---  DDL for Index EXAMS_LIST_PK
---------------------------------------------------------
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10001','N','10','191');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10005','N','10','186');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10130','N','30','292');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10002','N','10','222');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10012','N','20','296');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10125','N','40','233');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10127','N','10','197');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10120','N','10','273');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10000','N','10','176');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10009','N','20','126');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10010','N','20','183');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10126','N','20','187');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10128','N','30','306');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10122','N','30','293');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10129','N','40','56');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10011','N','20','223');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10131','N','40','276');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10105','N','10','84');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10121','N','20','282');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10014','N','20','113');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10124','N','30','171');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10003','N','10','180');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10004','N','10','194');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10007','N','10','112');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10013','N','20','252');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10006','N','10','332');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10008','N','10','266');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10123','N','40','246');
+insert into TOTAL_MARK (ID,ENROLLED,FACULTET,TOTALMARK) values ('10261','N','20','196');
 
-  CREATE UNIQUE INDEX "ADMIN"."EXAMS_LIST_PK" ON "ADMIN"."EXAMS_LIST" ("EXAM_ID")
-  ;
---------------------------------------------------------
---  DDL for Index FACULTETS_PK
---------------------------------------------------------
+  create UNIQUE INDEX "EXAMINATION_RECORDS_PK" ON "EXAMINATION_RECORDS" ("EXAM_RECORD_ID") ;
+  create UNIQUE INDEX "EXAMS_LIST_PK" ON "EXAMS_LIST" ("EXAM_ID") ;
+  create UNIQUE INDEX "FACULTETS_PK" ON "FACULTY_LIST" ("FACULTY_ID") ;
+  create UNIQUE INDEX "STUDENTS_PK" ON "APPLICANTS" ("ID") ;
+  create UNIQUE INDEX "STUDENTS_PK" ON "APPLICANTS" ("ID") ;
+  create UNIQUE INDEX "EXAMINATION_RECORDS_PK" ON "EXAMINATION_RECORDS" ("EXAM_RECORD_ID") ;
+  create UNIQUE INDEX "EXAMS_LIST_PK" ON "EXAMS_LIST" ("EXAM_ID") ;
+  create UNIQUE INDEX "FACULTETS_PK" ON "FACULTY_LIST" ("FACULTY_ID") ;
 
-  CREATE UNIQUE INDEX "ADMIN"."FACULTETS_PK" ON "ADMIN"."FACULTY_LIST" ("FACULTY_ID")
-  ;
---------------------------------------------------------
---  DDL for Index STUDENTS_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ADMIN"."STUDENTS_PK" ON "ADMIN"."APPLICANTS" ("ID")
-  ;
---------------------------------------------------------
---  DDL for Index STUDENTS_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ADMIN"."STUDENTS_PK" ON "ADMIN"."APPLICANTS" ("ID")
-  ;
---------------------------------------------------------
---  DDL for Index EXAMS_LIST_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ADMIN"."EXAMS_LIST_PK" ON "ADMIN"."EXAMS_LIST" ("EXAM_ID")
-  ;
---------------------------------------------------------
---  DDL for Index FACULTETS_PK
---------------------------------------------------------
-
-  CREATE UNIQUE INDEX "ADMIN"."FACULTETS_PK" ON "ADMIN"."FACULTY_LIST" ("FACULTY_ID")
-  ;
---------------------------------------------------------
---  DDL for Trigger TR_EXAM_ID
---------------------------------------------------------
-
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_EXAM_ID"
-   before insert on "ADMIN"."EXAMS_LIST"
+  create or replace EDITIONABLE TRIGGER "TR_EXAM_ID"
+   before insert on "EXAMS_LIST"
    for each row
 begin
    if inserting then
-      if :NEW."EXAM_ID" is null then
-         select SQ_EXAM_ID.nextval into :NEW."EXAM_ID" from dual;
+      if :new."EXAM_ID" is null then
+         select SQ_EXAM_ID.nextval into :new."EXAM_ID" from dual;
       end if;
    end if;
 end;
 
 /
-ALTER TRIGGER "ADMIN"."TR_EXAM_ID" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TR_EXAM_RECORD_ID
---------------------------------------------------------
+alter TRIGGER "TR_EXAM_ID" ENABLE;
 
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_EXAM_RECORD_ID"
-   before insert on "ADMIN"."EXAMINATION_RECORDS"
+  create or replace EDITIONABLE TRIGGER "TR_EXAM_RECORD_ID"
+   before insert on "EXAMINATION_RECORDS"
    for each row
 begin
    if inserting then
-      if :NEW."EXAM_RECORD_ID" is null then
-         select EXAM_RECORD_ID.nextval into :NEW."EXAM_RECORD_ID" from dual;
+      if :new."EXAM_RECORD_ID" is null then
+         select SQ_EXAM_RECORD_ID.nextval into :new."EXAM_RECORD_ID" from dual;
+      end if;
+   end if;
+end;
+/
+alter TRIGGER "TR_EXAM_RECORD_ID" ENABLE;
+
+  create or replace EDITIONABLE TRIGGER "TR_FACULTY_ID"
+   before insert on "FACULTY_LIST"
+   for each row
+begin
+   if inserting then
+      if :new."FACULTY_ID" is null then
+         select SQ_FACULTY_ID.nextval into :new."FACULTY_ID" from dual;
       end if;
    end if;
 end;
 
 /
-ALTER TRIGGER "ADMIN"."TR_EXAM_RECORD_ID" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TR_FACULTY_ID
---------------------------------------------------------
+alter TRIGGER "TR_FACULTY_ID" ENABLE;
 
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_FACULTY_ID"
-   before insert on "ADMIN"."FACULTY_LIST"
+  create or replace EDITIONABLE TRIGGER "TR_STUDENTS_ID"
+   before insert on "APPLICANTS"
    for each row
 begin
    if inserting then
-      if :NEW."FACULTY_ID" is null then
-         select SQ_FACULTY_ID.nextval into :NEW."FACULTY_ID" from dual;
+      if :new."ID" is null then
+         select SQ_STUDENT_ID.nextval into :new."ID" from dual;
       end if;
    end if;
 end;
 
 /
-ALTER TRIGGER "ADMIN"."TR_FACULTY_ID" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TR_STUDENTS_ID
---------------------------------------------------------
+alter TRIGGER "TR_STUDENTS_ID" ENABLE;
 
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_STUDENTS_ID"
-   before insert on "ADMIN"."APPLICANTS"
+  create or replace EDITIONABLE TRIGGER "TR_STUDENTS_ID"
+   before insert on "APPLICANTS"
    for each row
 begin
    if inserting then
-      if :NEW."ID" is null then
-         select SQ_STUDENT_ID.nextval into :NEW."ID" from dual;
+      if :new."ID" is null then
+         select SQ_STUDENT_ID.nextval into :new."ID" from dual;
       end if;
    end if;
 end;
 
 /
-ALTER TRIGGER "ADMIN"."TR_STUDENTS_ID" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TR_STUDENTS_ID
---------------------------------------------------------
+alter TRIGGER "TR_STUDENTS_ID" ENABLE;
 
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_STUDENTS_ID"
-   before insert on "ADMIN"."APPLICANTS"
+  create or replace EDITIONABLE TRIGGER "TR_EXAM_RECORD_ID"
+   before insert on "EXAMINATION_RECORDS"
    for each row
 begin
    if inserting then
-      if :NEW."ID" is null then
-         select SQ_STUDENT_ID.nextval into :NEW."ID" from dual;
+      if :new."EXAM_RECORD_ID" is null then
+         select SQ_EXAM_RECORD_ID.nextval into :new."EXAM_RECORD_ID" from dual;
+      end if;
+   end if;
+end;
+/
+alter TRIGGER "TR_EXAM_RECORD_ID" ENABLE;
+
+  create or replace EDITIONABLE TRIGGER "TR_EXAM_ID"
+   before insert on "EXAMS_LIST"
+   for each row
+begin
+   if inserting then
+      if :new."EXAM_ID" is null then
+         select SQ_EXAM_ID.nextval into :new."EXAM_ID" from dual;
       end if;
    end if;
 end;
 
 /
-ALTER TRIGGER "ADMIN"."TR_STUDENTS_ID" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TR_EXAM_RECORD_ID
---------------------------------------------------------
+alter TRIGGER "TR_EXAM_ID" ENABLE;
 
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_EXAM_RECORD_ID"
-   before insert on "ADMIN"."EXAMINATION_RECORDS"
+  create or replace EDITIONABLE TRIGGER "TR_FACULTY_ID"
+   before insert on "FACULTY_LIST"
    for each row
 begin
    if inserting then
-      if :NEW."EXAM_RECORD_ID" is null then
-         select EXAM_RECORD_ID.nextval into :NEW."EXAM_RECORD_ID" from dual;
+      if :new."FACULTY_ID" is null then
+         select SQ_FACULTY_ID.nextval into :new."FACULTY_ID" from dual;
       end if;
    end if;
 end;
 
 /
-ALTER TRIGGER "ADMIN"."TR_EXAM_RECORD_ID" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TR_EXAM_ID
---------------------------------------------------------
+alter TRIGGER "TR_FACULTY_ID" ENABLE;
 
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_EXAM_ID"
-   before insert on "ADMIN"."EXAMS_LIST"
-   for each row
-begin
-   if inserting then
-      if :NEW."EXAM_ID" is null then
-         select SQ_EXAM_ID.nextval into :NEW."EXAM_ID" from dual;
-      end if;
-   end if;
-end;
-
-/
-ALTER TRIGGER "ADMIN"."TR_EXAM_ID" ENABLE;
---------------------------------------------------------
---  DDL for Trigger TR_FACULTY_ID
---------------------------------------------------------
-
-  CREATE OR REPLACE EDITIONABLE TRIGGER "ADMIN"."TR_FACULTY_ID"
-   before insert on "ADMIN"."FACULTY_LIST"
-   for each row
-begin
-   if inserting then
-      if :NEW."FACULTY_ID" is null then
-         select SQ_FACULTY_ID.nextval into :NEW."FACULTY_ID" from dual;
-      end if;
-   end if;
-end;
-
-/
-ALTER TRIGGER "ADMIN"."TR_FACULTY_ID" ENABLE;
---------------------------------------------------------
---  Constraints for Table APPLICANTS
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("SCHOOL_AVG_SCORES" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("ST_EMAIL" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("ST_PASSWORD" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("ENROLLED" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("FACULTY_ID" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("ID" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("FIRST_NAME" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" MODIFY ("LAST_NAME" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."APPLICANTS" ADD CONSTRAINT "STUDENTS_PK" PRIMARY KEY ("ID")
-  USING INDEX  ENABLE;
---------------------------------------------------------
---  Constraints for Table EXAMINATION_RECORDS
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."EXAMINATION_RECORDS" MODIFY ("STUDENT_ID" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."EXAMINATION_RECORDS" MODIFY ("EXAM_ID" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."EXAMINATION_RECORDS" MODIFY ("GRADE" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."EXAMINATION_RECORDS" MODIFY ("EXAM_RECORD_ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table EXAMS_FACULTY
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."EXAMS_FACULTY" MODIFY ("FACULTY_ID" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."EXAMS_FACULTY" MODIFY ("EXAM_ID" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table EXAMS_LIST
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."EXAMS_LIST" MODIFY ("EXAM_ID" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."EXAMS_LIST" MODIFY ("EXAM_NAME" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."EXAMS_LIST" ADD CONSTRAINT "EXAMS_LIST_PK" PRIMARY KEY ("EXAM_ID")
-  USING INDEX  ENABLE;
---------------------------------------------------------
---  Constraints for Table FACULTY_LIST
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."FACULTY_LIST" MODIFY ("FACULTY_ID" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."FACULTY_LIST" MODIFY ("FACULTY_NAME" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."FACULTY_LIST" ADD CONSTRAINT "FACULTETS_PK" PRIMARY KEY ("FACULTY_ID")
-  USING INDEX  ENABLE;
-  ALTER TABLE "ADMIN"."FACULTY_LIST" MODIFY ("FACULTY_CAPACITY" NOT NULL ENABLE);
-  ALTER TABLE "ADMIN"."FACULTY_LIST" MODIFY ("FACULTY_MIN_GRADE" NOT NULL ENABLE);
---------------------------------------------------------
---  Ref Constraints for Table APPLICANTS
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."APPLICANTS" ADD CONSTRAINT "CS_FACULTY_ID" FOREIGN KEY ("FACULTY_ID")
-	  REFERENCES "ADMIN"."FACULTY_LIST" ("FACULTY_ID") ENABLE;
---------------------------------------------------------
---  Ref Constraints for Table EXAMINATION_RECORDS
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."EXAMINATION_RECORDS" ADD CONSTRAINT "CS_STUDENT_ID" FOREIGN KEY ("STUDENT_ID")
-	  REFERENCES "ADMIN"."APPLICANTS" ("ID") ENABLE;
-  ALTER TABLE "ADMIN"."EXAMINATION_RECORDS" ADD CONSTRAINT "CS_EXAM_ID" FOREIGN KEY ("EXAM_ID")
-	  REFERENCES "ADMIN"."EXAMS_LIST" ("EXAM_ID") ENABLE;
---------------------------------------------------------
---  Ref Constraints for Table EXAMS_FACULTY
---------------------------------------------------------
-
-  ALTER TABLE "ADMIN"."EXAMS_FACULTY" ADD CONSTRAINT "EXAM_FACULTY" FOREIGN KEY ("EXAM_ID")
-	  REFERENCES "ADMIN"."EXAMS_LIST" ("EXAM_ID") ON DELETE SET NULL ENABLE;
-  ALTER TABLE "ADMIN"."EXAMS_FACULTY" ADD CONSTRAINT "FACULTY_EXAM" FOREIGN KEY ("FACULTY_ID")
-	  REFERENCES "ADMIN"."FACULTY_LIST" ("FACULTY_ID") ENABLE;
+  alter table "APPLICANTS" modify ("SCHOOL_AVG_SCORES" NOT NULL ENABLE);
+  alter table "APPLICANTS" modify ("ST_EMAIL" NOT NULL ENABLE);
+  alter table "APPLICANTS" modify ("ST_PASSWORD" NOT NULL ENABLE);
+  alter table "APPLICANTS" modify ("ENROLLED" NOT NULL ENABLE);
+  alter table "APPLICANTS" modify ("FACULTY_ID" NOT NULL ENABLE);
+  alter table "APPLICANTS" modify ("ID" NOT NULL ENABLE);
+  alter table "APPLICANTS" modify ("FIRST_NAME" NOT NULL ENABLE);
+  alter table "APPLICANTS" modify ("LAST_NAME" NOT NULL ENABLE);
+  alter table "APPLICANTS" add CONSTRAINT "STUDENTS_PK" PRIMARY KEY ("ID") USING INDEX  ENABLE;
+  alter table "EXAMINATION_RECORDS" add CONSTRAINT "EXAMINATION_RECORDS_PK" PRIMARY KEY ("EXAM_RECORD_ID") USING INDEX  ENABLE;
+  alter table "EXAMINATION_RECORDS" modify ("STUDENT_ID" NOT NULL ENABLE);
+  alter table "EXAMINATION_RECORDS" modify ("EXAM_ID" NOT NULL ENABLE);
+  alter table "EXAMINATION_RECORDS" modify ("GRADE" NOT NULL ENABLE);
+  alter table "EXAMINATION_RECORDS" modify ("EXAM_RECORD_ID" NOT NULL ENABLE);
+  alter table "EXAMS_FACULTY" modify ("FACULTY_ID" NOT NULL ENABLE);
+  alter table "EXAMS_FACULTY" modify ("EXAM_ID" NOT NULL ENABLE);
+  alter table "EXAMS_LIST" modify ("EXAM_ID" NOT NULL ENABLE);
+  alter table "EXAMS_LIST" modify ("EXAM_NAME" NOT NULL ENABLE);
+  alter table "EXAMS_LIST" add CONSTRAINT "EXAMS_LIST_PK" PRIMARY KEY ("EXAM_ID") USING INDEX  ENABLE;
+  alter table "FACULTY_LIST" modify ("FACULTY_ID" NOT NULL ENABLE);
+  alter table "FACULTY_LIST" modify ("FACULTY_NAME" NOT NULL ENABLE);
+  alter table "FACULTY_LIST" add CONSTRAINT "FACULTETS_PK" PRIMARY KEY ("FACULTY_ID") USING INDEX  ENABLE;
+  alter table "FACULTY_LIST" modify ("FACULTY_CAPACITY" NOT NULL ENABLE);
+  alter table "FACULTY_LIST" modify ("FACULTY_MIN_GRADE" NOT NULL ENABLE);
+  alter table "APPLICANTS" add CONSTRAINT "CS_FACULTY_ID" FOREIGN KEY ("FACULTY_ID") REFERENCES "FACULTY_LIST" ("FACULTY_ID") ENABLE;
+  alter table "EXAMINATION_RECORDS" add CONSTRAINT "CS_EXAM_ID" FOREIGN KEY ("EXAM_ID") REFERENCES "EXAMS_LIST" ("EXAM_ID") ON delete SET NULL ENABLE;
+  alter table "EXAMINATION_RECORDS" add CONSTRAINT "CS_STUDENT_ID" FOREIGN KEY ("STUDENT_ID") REFERENCES "APPLICANTS" ("ID") ENABLE;
+  alter table "EXAMS_FACULTY" add CONSTRAINT "EXAM_FACULTY" FOREIGN KEY ("EXAM_ID") REFERENCES "EXAMS_LIST" ("EXAM_ID") ON delete SET NULL ENABLE;
+  alter table "EXAMS_FACULTY" add CONSTRAINT "FACULTY_EXAM" FOREIGN KEY ("FACULTY_ID") REFERENCES "FACULTY_LIST" ("FACULTY_ID") ENABLE;
