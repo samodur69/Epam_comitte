@@ -49,20 +49,20 @@
             </class>
             <class name="service.ApplicantServiceTest">
                 <methods>
-                    <include name="testEnrollAllApplicants"/>
+<!--                    <include name="testEnrollAllApplicants"/>-->
                     <include name="testGetTotalMark"/>
-                    <include name="testShowTopTenStudents"/>
+<!--                    <include name="testShowTopTenStudents"/>-->
                 </methods>
             </class>
-            <class name="service.ExaminationRecordsServiceTest">
-                <methods>
-                    <include name="testCreateRandomExamRecords"/>
-                    <include name="testCreateRandomExamRecordsForAll"/>
-                    <include name="testGetExamsByFaculty"/>
-                    <include name="testShowTopTwentyRecords"/>
-                    <include name="testShowAverageMarkByExams"/>
-                </methods>
-            </class>
+<!--            <class name="service.ExaminationRecordsServiceTest">-->
+<!--                <methods>-->
+<!--                    <include name="testCreateRandomExamRecords"/>-->
+<!--                    <include name="testCreateRandomExamRecordsForAll"/>-->
+<!--                    <include name="testGetExamsByFaculty"/>-->
+<!--                    <include name="testShowTopTwentyRecords"/>-->
+<!--                    <include name="testShowAverageMarkByExams"/>-->
+<!--                </methods>-->
+<!--            </class>-->
         </classes>
     </test>
 </suite>
