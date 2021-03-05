@@ -3,6 +3,11 @@
 <suite name="Admission Committee Services Test Suit">
     <test verbose="2" preserve-order="true" name="/Users/apple/_Projects/Epam_comitte">
         <classes>
+            <class name="service.ExaminationRecordsServiceTest">
+                <methods>
+                    <include name="testCreateRandomExamRecordsForAll"/>
+                </methods>
+            </class>
             <class name="dao.implementations.ApplicantImplTest">
                 <methods>
                     <include name="testCreate"/>
@@ -54,15 +59,13 @@
 <!--                    <include name="testShowTopTenStudents"/>-->
                 </methods>
             </class>
-<!--            <class name="service.ExaminationRecordsServiceTest">-->
-<!--                <methods>-->
-<!--                    <include name="testCreateRandomExamRecords"/>-->
-<!--                    <include name="testCreateRandomExamRecordsForAll"/>-->
-<!--                    <include name="testGetExamsByFaculty"/>-->
+            <class name="service.ExaminationRecordsServiceTest">
+                <methods>
+                    <include name="testGetExamsByFaculty"/>
 <!--                    <include name="testShowTopTwentyRecords"/>-->
 <!--                    <include name="testShowAverageMarkByExams"/>-->
-<!--                </methods>-->
-<!--            </class>-->
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>
